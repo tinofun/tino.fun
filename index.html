@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tino.fun - Plataforma de Minijuegos 2D</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #0f111a;
+            color: #cdd6f4;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        /* Barra Lateral */
+        .sidebar {
+            width: 240px;
+            background-color: #161925;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-right: 1px solid #232738;
+        }
+        .logo {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00df9a;
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+        .nav-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+        .nav-links li a {
+            display: block;
+            color: #a0a5cb;
+            text-decoration: none;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .nav-links li a:hover, .nav-links li a.active {
+            background-color: #232738;
+            color: #ffffff;
+            border-left: 4px solid #00df9a;
+        }
+        .user-footer {
+            padding: 15px 20px;
+            background-color: #11131d;
+            font-size: 13px;
+            color: #72799c;
+        }
+        /* Contenido Principal */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+        h1 {
+            font-size: 24px;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #72799c;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        /* Tarjeta del Baseplate */
+        .card {
+            background-color: #1a1d2e;
+            border-radius: 8px;
+            padding: 25px;
+            max-width: 600px;
+            border: 1px solid #232738;
+        }
+        .card h3 {
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .card p {
+            color: #9399b2;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #00df9a;
+            color: #0f111a;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn:hover {
+            background-color: #00c285;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menú Lateral -->
+    <div class="sidebar">
+        <div>
+            <div class="logo">⚡ TINO.FUN</div>
+            <ul class="nav-links">
+                <li><a href="#" class="active">🏠 Inicio</a></li>
+                <li><a href="#">🎮 Juegos</a></li>
+                <li><a href="#">🔥 Populares</a></li>
+                <li><a href="#">👤 Perfil</a></li>
+                <li><a href="#">💬 Amigos</a></li>
+            </ul>
+        </div>
+        <div class="user-footer">
+            👤 Santino_R<br>
+            <span style="color: #00df9a;">● Online (Fundador)</span>
+        </div>
+    </div>
+
+    <!-- Área de Contenido -->
+    <div class="main-content">
+        <h1>Bienvenido a Tino.fun</h1>
+        <p class="subtitle">La plataforma independiente de minijuegos 2D y pruebas de comunidad.</p>
+
+        <!-- Sección Baseplate -->
+        <div class="card">
+            <h3>🟩 Baseplate [Entorno de Pruebas]</h3>
+            <p>Mundo oficial de pruebas para verificar las físicas, animaciones y el diseño de los Stickman antes de subirlos a la red.</p>
+            <button class="btn" onclick="alert('¡Pronto abriremos el motor de juego Baseplate en la web!')">▶ JUGAR BASEPLATE</button>
+        </div>
+    </div>
+
+</body>
+</html>
