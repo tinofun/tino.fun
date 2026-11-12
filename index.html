@@ -3,143 +3,557 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tino.fun - Plataforma de Minijuegos 2D</title>
+    <title>Tino.fun - Plataforma de Minijuegos</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+            user-select: none;
         }
+
         body {
-            background-color: #0f111a;
-            color: #cdd6f4;
+            background-color: #0b0e14;
+            color: #e0e6ed;
             display: flex;
             height: 100vh;
             overflow: hidden;
         }
-        /* Barra Lateral */
+
+        /* Sidebar con estilo Glassmorphism */
         .sidebar {
-            width: 240px;
-            background-color: #161925;
+            width: 260px;
+            background: linear-gradient(180deg, #131722 0%, #0d1017 100%);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 20px 0;
-            border-right: 1px solid #232738;
+            padding: 24px 0;
+            border-right: 1px solid #1e2430;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
+            z-index: 10;
         }
+
         .logo {
-            font-size: 18px;
-            font-weight: bold;
-            color: #00df9a;
-            padding: 0 20px;
-            margin-bottom: 30px;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: #ffffff;
+            padding: 0 24px;
+            margin-bottom: 35px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
+        .logo span {
+            color: #00e699;
+            text-shadow: 0 0 12px rgba(0, 230, 153, 0.4);
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #4f586b;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            padding: 0 24px;
+            margin-bottom: 12px;
+        }
+
         .nav-links {
             list-style: none;
-            flex-grow: 1;
+            margin-bottom: 25px;
         }
+
         .nav-links li a {
-            display: block;
-            color: #a0a5cb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #8f9bb0;
             text-decoration: none;
-            padding: 12px 20px;
+            padding: 12px 24px;
             font-size: 14px;
-            font-weight: bold;
-            transition: 0.2s;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            border-left: 3px solid transparent;
         }
+
         .nav-links li a:hover, .nav-links li a.active {
-            background-color: #232738;
+            background: rgba(255, 255, 255, 0.04);
             color: #ffffff;
-            border-left: 4px solid #00df9a;
+            border-left-color: #00e699;
         }
+
+        .nav-links li a.active {
+            background: linear-gradient(90deg, rgba(0, 230, 153, 0.1) 0%, rgba(0, 230, 153, 0) 100%);
+        }
+
         .user-footer {
-            padding: 15px 20px;
-            background-color: #11131d;
-            font-size: 13px;
-            color: #72799c;
+            padding: 16px 24px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid #1a1f2c;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        /* Contenido Principal */
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #00e699;
+            color: #0b0e14;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            font-size: 13px;
+        }
+
+        .user-name {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .user-status {
+            font-size: 11px;
+            color: #00e699;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #00e699;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #00e699;
+        }
+
+        /* Área Principal */
         .main-content {
             flex-grow: 1;
             padding: 40px;
             overflow-y: auto;
+            background: radial-gradient(circle at top right, #161b29 0%, #0b0e14 60%);
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
         }
-        h1 {
-            font-size: 24px;
+
+        .header-title h1 {
+            font-size: 32px;
+            font-weight: 800;
             color: #ffffff;
-            margin-bottom: 10px;
+            letter-spacing: -0.5px;
         }
-        .subtitle {
-            color: #72799c;
-            font-size: 14px;
-            margin-bottom: 30px;
+
+        .header-title p {
+            color: #6c788e;
+            font-size: 15px;
+            margin-top: 6px;
         }
-        /* Tarjeta del Baseplate */
-        .card {
-            background-color: #1a1d2e;
-            border-radius: 8px;
-            padding: 25px;
-            max-width: 600px;
-            border: 1px solid #232738;
+
+        /* Rejilla de Juegos */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
         }
-        .card h3 {
-            color: #ffffff;
-            margin-bottom: 10px;
-            font-size: 18px;
+
+        .game-card {
+            background: #141824;
+            border: 1px solid #1e2536;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
-        .card p {
-            color: #9399b2;
-            font-size: 14px;
-            margin-bottom: 20px;
+
+        .game-card.active-game:hover {
+            transform: translateY(-5px);
+            border-color: #00e699;
+            box-shadow: 0 10px 25px rgba(0, 230, 153, 0.15);
         }
-        .btn {
-            background-color: #00df9a;
-            color: #0f111a;
-            border: none;
-            padding: 10px 20px;
-            font-weight: bold;
+
+        .game-card.disabled {
+            opacity: 0.5;
+            filter: grayscale(0.8);
+            cursor: not-allowed;
+        }
+
+        .card-thumb {
+            height: 140px;
+            background: #1b2030;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+        }
+
+        .badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #00e699;
+            color: #0b0e14;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 8px;
             border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge-locked {
+            background: #333a4d;
+            color: #8a94a6;
+        }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .card-body h3 {
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .card-body p {
+            font-size: 13px;
+            color: #7a8599;
+            line-height: 1.5;
+        }
+
+        .btn-play {
+            width: 100%;
+            background: #00e699;
+            color: #0b0e14;
+            border: none;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: 800;
+            border-radius: 6px;
             cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-play:hover {
+            background: #00ffaa;
+            box-shadow: 0 0 15px rgba(0, 230, 153, 0.4);
+        }
+
+        .btn-disabled {
+            background: #252c3d;
+            color: #586375;
+            cursor: not-allowed;
+        }
+
+        /* Modal / Viewport del Juego */
+        .game-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(5, 7, 10, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-modal.open {
+            display: flex;
+        }
+
+        .modal-header {
+            width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .btn-close {
+            background: #1e2536;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
             transition: 0.2s;
         }
-        .btn:hover {
-            background-color: #00c285;
+
+        .btn-close:hover {
+            background: #ff4757;
+        }
+
+        canvas {
+            background: #10141e;
+            border: 2px solid #1e2536;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        }
+
+        .controls-hint {
+            margin-top: 15px;
+            color: #6c788e;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Menú Lateral -->
+    <!-- Sidebar -->
     <div class="sidebar">
         <div>
-            <div class="logo">⚡ TINO.FUN</div>
+            <div class="logo">⚡ TINO<span>.FUN</span></div>
+            
+            <div class="nav-section-title">Navegación</div>
             <ul class="nav-links">
-                <li><a href="#" class="active">🏠 Inicio</a></li>
-                <li><a href="#">🎮 Juegos</a></li>
-                <li><a href="#">🔥 Populares</a></li>
-                <li><a href="#">👤 Perfil</a></li>
-                <li><a href="#">💬 Amigos</a></li>
+                <li><a href="#" class="active"><span>🏠</span> Inicio</a></li>
+                <li><a href="#"><span>🎮</span> Explorar</a></li>
+                <li><a href="#"><span>🔥</span> Populares</a></li>
+            </ul>
+
+            <div class="nav-section-title">Social</div>
+            <ul class="nav-links">
+                <li><a href="#"><span>👤</span> Perfil</a></li>
+                <li><a href="#"><span>💬</span> Amigos</a></li>
             </ul>
         </div>
+
         <div class="user-footer">
-            👤 Santino_R<br>
-            <span style="color: #00df9a;">● Online (Fundador)</span>
+            <div class="avatar">S</div>
+            <div class="user-info">
+                <span class="user-name">Santino</span>
+                <span class="user-status"><div class="status-dot"></div> Creador</span>
+            </div>
         </div>
     </div>
 
-    <!-- Área de Contenido -->
+    <!-- Contenido Principal -->
     <div class="main-content">
-        <h1>Bienvenido a Tino.fun</h1>
-        <p class="subtitle">La plataforma independiente de minijuegos 2D y pruebas de comunidad.</p>
+        <div class="header-title">
+            <h1>Librería de Minijuegos</h1>
+            <p>Selecciona un título para iniciar la prueba interactiva directamente en tu navegador.</p>
+        </div>
 
-        <!-- Sección Baseplate -->
-        <div class="card">
-            <h3>🟩 Baseplate [Entorno de Pruebas]</h3>
-            <p>Mundo oficial de pruebas para verificar las físicas, animaciones y el diseño de los Stickman antes de subirlos a la red.</p>
-            <button class="btn" onclick="alert('¡Pronto abriremos el motor de juego Baseplate en la web!')">▶ JUGAR BASEPLATE</button>
+        <div class="games-grid">
+            <!-- Juego 1: Baseplate (Disponible) -->
+            <div class="game-card active-game">
+                <div class="card-thumb">
+                    🟩
+                    <span class="badge">Disponible</span>
+                </div>
+                <div class="card-body">
+                    <h3>Baseplate 2D</h3>
+                    <p>Entorno de pruebas físico. Observa las animaciones de movimiento e inercia del Stickman en tiempo real.</p>
+                    <button class="btn-play" onclick="openGame()">▶ JUGAR AHORA</button>
+                </div>
+            </div>
+
+            <!-- Juego 2: Bloqueado -->
+            <div class="game-card disabled">
+                <div class="card-thumb">
+                    🗡️
+                    <span class="badge badge-locked">Próximamente</span>
+                </div>
+                <div class="card-body">
+                    <h3>Stick Duel 2D</h3>
+                    <p>Sistema de combate melee dinámico con física de espadas e impactos.</p>
+                    <button class="btn-play btn-disabled" disabled>EN DESARROLLO</button>
+                </div>
+            </div>
+
+            <!-- Juego 3: Bloqueado -->
+            <div class="game-card disabled">
+                <div class="card-thumb">
+                    🏃
+                    <span class="badge badge-locked">Próximamente</span>
+                </div>
+                <div class="card-body">
+                    <h3>Parkour Runner</h3>
+                    <p>Pruebas de saltos, fluidez y mecánicas de plataformas en ritmo acelerado.</p>
+                    <button class="btn-play btn-disabled" disabled>EN DESARROLLO</button>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Modal con Canvas para el Stickman -->
+    <div class="game-modal" id="gameModal">
+        <div class="modal-header">
+            <div class="modal-title">🟩 Baseplate - Visualizador Stickman</div>
+            <button class="btn-close" onclick="closeGame()">✖ SALIR</button>
+        </div>
+        <canvas id="gameCanvas" width="800" height="450"></canvas>
+        <div class="controls-hint">Usa las teclas <b>A / D</b> o las <b>Flechas Izquierda / Derecha</b> para mover al Stickman.</div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('gameModal');
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let animationId;
+        let keys = {};
+
+        // Objeto Stickman con posición y animaciones
+        const stickman = {
+            x: 400,
+            y: 320,
+            vx: 0,
+            speed: 4,
+            animTimer: 0,
+            isWalking: false,
+            facingRight: true
+        };
+
+        window.addEventListener('keydown', e => keys[e.key] = true);
+        window.addEventListener('keyup', e => keys[e.key] = false);
+
+        function openGame() {
+            modal.classList.add('open');
+            gameLoop();
+        }
+
+        function closeGame() {
+            modal.classList.remove('open');
+            cancelAnimationFrame(animationId);
+        }
+
+        function update() {
+            stickman.isWalking = false;
+
+            if (keys['ArrowRight'] || keys['d'] || keys['D']) {
+                stickman.vx = stickman.speed;
+                stickman.isWalking = true;
+                stickman.facingRight = true;
+            } else if (keys['ArrowLeft'] || keys['a'] || keys['A']) {
+                stickman.vx = -stickman.speed;
+                stickman.isWalking = true;
+                stickman.facingRight = false;
+            } else {
+                stickman.vx = 0;
+            }
+
+            stickman.x += stickman.vx;
+
+            // Limites del escenario
+            if (stickman.x < 30) stickman.x = 30;
+            if (stickman.x > canvas.width - 30) stickman.x = canvas.width - 30;
+
+            if (stickman.isWalking) {
+                stickman.animTimer += 0.15;
+            } else {
+                stickman.animTimer = 0;
+            }
+        }
+
+        function drawStickman(x, y) {
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+
+            const legAngle = Math.sin(stickman.animTimer) * 0.6;
+            const armAngle = Math.cos(stickman.animTimer) * 0.6;
+
+            // Cabeza
+            ctx.beginPath();
+            ctx.arc(x, y - 60, 14, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Cuerpo
+            ctx.beginPath();
+            ctx.moveTo(x, y - 46);
+            ctx.lineTo(x, y - 15);
+            ctx.stroke();
+
+            // Brazos
+            ctx.beginPath();
+            ctx.moveTo(x, y - 40);
+            ctx.lineTo(x + Math.sin(armAngle) * 20, y - 20);
+            ctx.moveTo(x, y - 40);
+            ctx.lineTo(x - Math.sin(armAngle) * 20, y - 20);
+            ctx.stroke();
+
+            // Piernas
+            ctx.beginPath();
+            ctx.moveTo(x, y - 15);
+            ctx.lineTo(x + Math.sin(legAngle) * 22, y + 20);
+            ctx.moveTo(x, y - 15);
+            ctx.lineTo(x - Math.sin(legAngle) * 22, y + 20);
+            ctx.stroke();
+        }
+
+        function draw() {
+            // Fondo
+            ctx.fillStyle = '#0f131d';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Grid de Baseplate (Suelo)
+            ctx.strokeStyle = '#1e2638';
+            ctx.lineWidth = 1;
+            const gridSize = 40;
+
+            for (let x = 0; x < canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            // Línea del suelo
+            ctx.strokeStyle = '#00e699';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, 340);
+            ctx.lineTo(canvas.width, 340);
+            ctx.stroke();
+
+            // Dibujar Stickman
+            drawStickman(stickman.x, stickman.y);
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            animationId = requestAnimationFrame(gameLoop);
+        }
+    </script>
 </body>
 </html>
