@@ -85,7 +85,7 @@
             letter-spacing: 0.5px;
         }
 
-        .form-group input {
+        .form-group input, .form-group textarea {
             background-color: var(--bg);
             border: 1px solid var(--border);
             border-radius: 6px;
@@ -94,9 +94,10 @@
             font-size: 14px;
             outline: none;
             transition: border-color 0.2s;
+            resize: none;
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .form-group textarea:focus {
             border-color: #52525b;
         }
 
@@ -138,7 +139,7 @@
             min-height: 16px;
         }
 
-        /* Aplicación Principal (Oculta hasta iniciar sesión) */
+        /* Aplicación Principal */
         #appContainer {
             display: none;
             width: 100vw;
@@ -278,6 +279,9 @@
 
         .header {
             margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
         }
 
         .header h1 {
@@ -325,7 +329,7 @@
         .card-info p {
             font-size: 13px;
             color: var(--text-secondary);
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         .btn-play {
@@ -344,7 +348,188 @@
             opacity: 0.9;
         }
 
-        /* Overlay del Juego en Pantalla Completa */
+        /* Estilos de Perfil */
+        .profile-container {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile-big-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #27272a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .profile-meta h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .profile-meta p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 30px;
+            padding: 16px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-item span {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-item h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* Estilos de Amigos */
+        .friends-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 700px;
+        }
+
+        .friends-header-bar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #52525b;
+        }
+
+        .btn-add-friend {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            width: 46px;
+            height: 46px;
+            border-radius: 8px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-add-friend:hover {
+            background-color: var(--surface-hover);
+            border-color: #3f3f46;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 10px;
+        }
+
+        .friends-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .friend-card {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .friend-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .friend-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #27272a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .friend-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .friend-status {
+            font-size: 12px;
+            color: #10b981;
+        }
+
+        .btn-small {
+            background-color: var(--text-primary);
+            color: var(--bg);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-small:hover {
+            opacity: 0.9;
+        }
+
+        /* Modal Fullscreen para Baseplate */
         .fullscreen-game {
             display: none;
             position: fixed;
@@ -400,7 +585,7 @@
 </head>
 <body>
 
-    <!-- Pantalla de Autenticación (Login / Registro) -->
+    <!-- Pantalla de Autenticación -->
     <div id="authScreen">
         <div class="auth-card" id="cardRegister">
             <h2>Crear Cuenta en tino.fun</h2>
@@ -435,9 +620,8 @@
         </div>
     </div>
 
-    <!-- Contenedor Principal de la Web (Oculto hasta autenticarse) -->
+    <!-- Contenedor Principal -->
     <div id="appContainer">
-        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="nav-group">
                 <div class="brand">tino.fun</div>
@@ -471,13 +655,14 @@
             </div>
         </aside>
 
-        <!-- Main -->
         <main class="main">
             <!-- Pestaña Inicio -->
             <section id="tab-inicio" class="tab-content active">
                 <div class="header">
-                    <h1>Librería</h1>
-                    <p>Experimentos interactivos y minijuegos web.</p>
+                    <div>
+                        <h1>Librería</h1>
+                        <p>Experimentos interactivos y minijuegos web.</p>
+                    </div>
                 </div>
 
                 <div class="grid">
@@ -494,8 +679,10 @@
             <!-- Pestaña Explorar -->
             <section id="tab-explorar" class="tab-content">
                 <div class="header">
-                    <h1>Explorar</h1>
-                    <p>Nuevos conceptos en desarrollo.</p>
+                    <div>
+                        <h1>Explorar</h1>
+                        <p>Nuevos conceptos en desarrollo.</p>
+                    </div>
                 </div>
                 <p style="color: var(--text-secondary); font-size: 14px;">Próximamente más experimentos.</p>
             </section>
@@ -503,8 +690,10 @@
             <!-- Pestaña Populares -->
             <section id="tab-populares" class="tab-content">
                 <div class="header">
-                    <h1>Populares</h1>
-                    <p>Lo más visitado de la plataforma.</p>
+                    <div>
+                        <h1>Populares</h1>
+                        <p>Lo más visitado de la plataforma.</p>
+                    </div>
                 </div>
                 <p style="color: var(--text-secondary); font-size: 14px;">Baseplate encabeza la lista.</p>
             </section>
@@ -512,19 +701,68 @@
             <!-- Pestaña Perfil -->
             <section id="tab-perfil" class="tab-content">
                 <div class="header">
-                    <h1>Perfil</h1>
-                    <p>Información de cuenta y registros.</p>
+                    <div>
+                        <h1>Perfil</h1>
+                        <p>Información y configuración de cuenta.</p>
+                    </div>
                 </div>
-                <p style="color: var(--text-secondary); font-size: 14px;">Conectado como <strong id="profileUsername">Santino</strong></p>
+
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-big-avatar" id="profileBigAvatar">S</div>
+                        <div class="profile-meta">
+                            <h2 id="profileUsername">Santino</h2>
+                            <p id="profileCreatedDate">Creado el: --/--/----</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <span>Amigos</span>
+                            <h3 id="profileFriendsCount">0</h3>
+                        </div>
+                        <div class="stat-item">
+                            <span>Estado</span>
+                            <h3 style="color: #10b981;">Online</h3>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción de Perfil</label>
+                        <textarea id="profileBioInput" rows="3" placeholder="Escribe algo sobre ti..."></textarea>
+                    </div>
+                    <button class="btn-small" style="width: fit-content;" onclick="saveBio()">Guardar Descripción</button>
+                </div>
             </section>
 
             <!-- Pestaña Amigos -->
             <section id="tab-amigos" class="tab-content">
                 <div class="header">
-                    <h1>Amigos</h1>
-                    <p>Red de creadores y jugadores.</p>
+                    <div>
+                        <h1>Amigos</h1>
+                        <p>Gestiona tus contactos y solicitudes.</p>
+                    </div>
                 </div>
-                <p style="color: var(--text-secondary); font-size: 14px;">Sin conexiones activas.</p>
+
+                <div class="friends-container">
+                    <div class="friends-header-bar">
+                        <input type="text" id="friendSearchInput" class="search-input" placeholder="🔍 Buscar cualquier usuario..." oninput="filterFriends()">
+                        <button class="btn-add-friend" onclick="openAddFriendModal()" title="Jugadores Recientes">+</button>
+                    </div>
+
+                    <!-- Sección de Jugadores Recientes (Oculta por defecto, se abre con el +) -->
+                    <div id="recentPlayersSection" style="display: none; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 10px;">
+                        <div class="section-title" style="margin-top: 0; margin-bottom: 12px;">Jugadores Recientes (Partida anterior)</div>
+                        <div class="friends-list" id="recentPlayersList">
+                            <!-- Se llena por JS -->
+                        </div>
+                    </div>
+
+                    <div class="section-title">Amigos Agregados (<span id="friendsCountBadge">0</span>)</div>
+                    <div class="friends-list" id="friendsListContainer">
+                        <!-- Amigos del usuario -->
+                    </div>
+                </div>
             </section>
         </main>
     </div>
@@ -537,7 +775,9 @@
     </div>
 
     <script>
-        // --- SISTEMA DE AUTENTICACIÓN ---
+        // --- BASE DE DATOS LOCAL Y SESIÓN ---
+        let currentUser = null;
+
         function toggleAuthMode() {
             const regCard = document.getElementById('cardRegister');
             const logCard = document.getElementById('cardLogin');
@@ -560,8 +800,21 @@
                 return;
             }
 
-            // Guardar usuario en LocalStorage
-            localStorage.setItem('tino_user_' + user, pass);
+            if (localStorage.getItem('tino_user_' + user)) {
+                err.textContent = "El usuario ya existe. Inicia sesión.";
+                return;
+            }
+
+            const creationDate = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+            const userData = {
+                pass: pass,
+                created: creationDate,
+                bio: "¡Hola! Estoy usando tino.fun",
+                friends: ["KekoDev", "AlexGamer"] // Amigos iniciales por defecto
+            };
+
+            localStorage.setItem('tino_user_' + user, JSON.stringify(userData));
             localStorage.setItem('tino_current_session', user);
             initApp(user);
         }
@@ -571,14 +824,16 @@
             const pass = document.getElementById('logPass').value.trim();
             const err = document.getElementById('logError');
 
-            const savedPass = localStorage.getItem('tino_user_' + user);
+            const rawData = localStorage.getItem('tino_user_' + user);
 
-            if (!savedPass) {
+            if (!rawData) {
                 err.textContent = "El usuario no existe. ¡Regístrate primero!";
                 return;
             }
 
-            if (savedPass !== pass) {
+            const userData = JSON.parse(rawData);
+
+            if (userData.pass !== pass) {
                 err.textContent = "Contraseña incorrecta.";
                 return;
             }
@@ -588,11 +843,18 @@
         }
 
         function initApp(username) {
+            currentUser = username;
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('appContainer').style.display = 'flex';
+            
             document.getElementById('displayUsername').textContent = username;
             document.getElementById('profileUsername').textContent = username;
+            document.getElementById('profileBigAvatar').textContent = username.charAt(0).toUpperCase();
             document.getElementById('userAvatarLetter').textContent = username.charAt(0).toUpperCase();
+
+            loadUserData();
+            loadFriends();
+            loadRecentPlayers();
         }
 
         function logout() {
@@ -600,13 +862,161 @@
             location.reload();
         }
 
-        // Verificar si ya hay una sesión activa al cargar
         window.addEventListener('DOMContentLoaded', () => {
             const activeUser = localStorage.getItem('tino_current_session');
             if (activeUser) {
                 initApp(activeUser);
             }
         });
+
+        // --- GESTIÓN DE PERFIL Y DATOS ---
+        function loadUserData() {
+            const data = JSON.parse(localStorage.getItem('tino_user_' + currentUser));
+            if (data) {
+                document.getElementById('profileCreatedDate').textContent = "Creado el: " + (data.created || "11/11/2026");
+                document.getElementById('profileBioInput').value = data.bio || "";
+                document.getElementById('profileFriendsCount').textContent = data.friends ? data.friends.length : 0;
+            }
+        }
+
+        function saveBio() {
+            const bioText = document.getElementById('profileBioInput').value;
+            let data = JSON.parse(localStorage.getItem('tino_user_' + currentUser));
+            if (data) {
+                data.bio = bioText;
+                localStorage.setItem('tino_user_' + currentUser, JSON.stringify(data));
+                alert("¡Descripción guardada con éxito!");
+            }
+        }
+
+        // --- GESTIÓN DE AMIGOS Y BUSCADOR ---
+        const MOCK_ALL_USERS = ["KekoDev", "AlexGamer", "ShadowPro", "CyberNinja", "PixelBoy", "TinoFan99"];
+
+        function loadFriends() {
+            let data = JSON.parse(localStorage.getItem('tino_user_' + currentUser));
+            let friends = data && data.friends ? data.friends : [];
+
+            const container = document.getElementById('friendsListContainer');
+            document.getElementById('friendsCountBadge').textContent = friends.length;
+            document.getElementById('profileFriendsCount').textContent = friends.length;
+
+            container.innerHTML = "";
+            if (friends.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-secondary); font-size: 13px;">No tienes amigos agregados aún.</p>`;
+                return;
+            }
+
+            friends.forEach(friend => {
+                container.innerHTML += `
+                    <div class="friend-card">
+                        <div class="friend-info">
+                            <div class="friend-avatar">${friend.charAt(0).toUpperCase()}</div>
+                            <div>
+                                <div class="friend-name">${friend}</div>
+                                <div class="friend-status">● En línea</div>
+                            </div>
+                        </div>
+                        <button class="btn-small" style="background-color: #232328; color: #ef4444;" onclick="removeFriend('${friend}')">Eliminar</button>
+                    </div>
+                `;
+            });
+        }
+
+        function removeFriend(friendName) {
+            let data = JSON.parse(localStorage.getItem('tino_user_' + currentUser));
+            if (data && data.friends) {
+                data.friends = data.friends.filter(f => f !== friendName);
+                localStorage.setItem('tino_user_' + currentUser, JSON.stringify(data));
+                loadFriends();
+            }
+        }
+
+        function filterFriends() {
+            const query = document.getElementById('friendSearchInput').value.toLowerCase();
+            let data = JSON.parse(localStorage.getItem('tino_user_' + currentUser));
+            let friends = data && data.friends ? data.friends : [];
+
+            const container = document.getElementById('friendsListContainer');
+            container.innerHTML = "";
+
+            const filtered = friends.filter(f => f.toLowerCase().includes(query));
+
+            if (filtered.length === 0) {
+                // Si busca a alguien que no es su amigo pero existe en la plataforma, mostrar opción de enviar solicitud
+                if (query.length > 0 && MOCK_ALL_USERS.includes(query.charAt(0).toUpperCase() + query.slice(1))) {
+                    let target = query.charAt(0).toUpperCase() + query.slice(1);
+                    container.innerHTML = `
+                        <div class="friend-card">
+                            <div class="friend-info">
+                                <div class="friend-avatar">${target.charAt(0)}</div>
+                                <div><div class="friend-name">${target}</div><div style="font-size:12px; color:var(--text-secondary)">Usuario encontrado</div></div>
+                            </div>
+                            <button class="btn-small" onclick="addFriend('${target}')">+ Agregar Amigo</button>
+                        </div>
+                    `;
+                    return;
+                }
+                container.innerHTML = `<p style="color: var(--text-secondary); font-size: 13px;">No se encontraron resultados.</p>`;
+                return;
+            }
+
+            filtered.forEach(friend => {
+                container.innerHTML += `
+                    <div class="friend-card">
+                        <div class="friend-info">
+                            <div class="friend-avatar">${friend.charAt(0).toUpperCase()}</div>
+                            <div>
+                                <div class="friend-name">${friend}</div>
+                                <div class="friend-status">● En línea</div>
+                            </div>
+                        </div>
+                        <button class="btn-small" style="background-color: #232328; color: #ef4444;" onclick="removeFriend('${friend}')">Eliminar</button>
+                    </div>
+                `;
+            });
+        }
+
+        // --- BOTÓN "+" Y JUGADORES RECIENTES ---
+        function openAddFriendModal() {
+            const section = document.getElementById('recentPlayersSection');
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function loadRecentPlayers() {
+            const recentList = document.getElementById('recentPlayersList');
+            const recentUsers = ["CyberNinja", "ShadowPro", "PixelBoy"]; // Simulados de partidas recientes
+
+            recentList.innerHTML = "";
+            recentUsers.forEach(user => {
+                recentList.innerHTML += `
+                    <div class="friend-card" style="background: var(--bg);">
+                        <div class="friend-info">
+                            <div class="friend-avatar">${user.charAt(0)}</div>
+                            <div>
+                                <div class="friend-name">${user}</div>
+                                <div style="font-size: 11px; color: var(--text-secondary);">Jugaron juntos en Baseplate</div>
+                            </div>
+                        </div>
+                        <button class="btn-small" onclick="addFriend('${user}')">+ Agregar</button>
+                    </div>
+                `;
+            });
+        }
+
+        function addFriend(username) {
+            let data = JSON.parse(localStorage.getItem('tino_user_' + currentUser));
+            if (data) {
+                if (!data.friends) data.friends = [];
+                if (!data.friends.includes(username)) {
+                    data.friends.push(username);
+                    localStorage.setItem('tino_user_' + currentUser, JSON.stringify(data));
+                    loadFriends();
+                    alert(`¡Ahora ${username} es tu amigo!`);
+                } else {
+                    alert("Ya tienes a este usuario agregado.");
+                }
+            }
+        }
 
 
         // --- SISTEMA DE PESTAÑAS ---
@@ -662,7 +1072,7 @@
         }
 
 
-        // --- MOTOR BASEPLATE (Autos libres + Explosión por pared) ---
+        // --- MOTOR BASEPLATE ---
         const container = document.getElementById('gameContainer');
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -781,7 +1191,6 @@
                     c.vx *= 0.95;
                     c.vy *= 0.95;
 
-                    // Colisión contra las paredes (Explosión)
                     let margin = 50;
                     let speedMag = Math.hypot(c.vx, c.vy);
                     let hitWall = (c.x < margin || c.x > canvas.width - margin || c.y < margin || c.y > canvas.height - margin);
