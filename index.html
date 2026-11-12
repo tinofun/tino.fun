@@ -229,7 +229,7 @@
         .user-avatar {
             width: 32px;
             height: 32px;
-            border-radius: 50%;
+            border-radius: 6px; /* Cuadrado con esquinas redondeadas */
             background: #27272a;
             background-size: cover;
             background-position: center;
@@ -372,7 +372,7 @@
         .profile-big-avatar {
             width: 72px;
             height: 72px;
-            border-radius: 50%;
+            border-radius: 10px; /* Cuadrado con esquinas redondeadas */
             background: #27272a;
             background-size: cover;
             background-position: center;
@@ -510,7 +510,7 @@
         .friend-avatar {
             width: 36px;
             height: 36px;
-            border-radius: 50%;
+            border-radius: 6px;
             background: #27272a;
             display: flex;
             align-items: center;
@@ -739,7 +739,7 @@
                         </div>
                         <div class="stat-item">
                             <span>Seguidores</span>
-                            <h3 id="profileFollowersCount">128</h3>
+                            <h3 id="profileFollowersCount">0</h3>
                         </div>
                         <div class="stat-item">
                             <span>Estado</span>
@@ -839,7 +839,7 @@
                 created: creationDate,
                 bio: "¡Hola! Estoy usando tino.fun",
                 avatar: "",
-                followers: 15,
+                followers: 0, // Arranca en 0 seguidores reales
                 friends: ["KekoDev", "AlexGamer"]
             };
 
@@ -903,7 +903,7 @@
                 document.getElementById('profileCreatedDate').textContent = "Creado el: " + (data.created || "11/11/2026");
                 document.getElementById('profileBioInput').value = data.bio || "";
                 document.getElementById('profileFriendsCount').textContent = data.friends ? data.friends.length : 0;
-                document.getElementById('profileFollowersCount').textContent = data.followers || 15;
+                document.getElementById('profileFollowersCount').textContent = data.followers !== undefined ? data.followers : 0;
 
                 applyAvatar(data.avatar, currentUser);
             }
