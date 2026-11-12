@@ -314,7 +314,7 @@
                 <div class="card">
                     <div class="card-info">
                         <h3>Baseplate</h3>
-                        <p>Simulador de físicas de impactos. Arrastra los vehículos deportivos y lánzalos contra las paredes para hacerlos estallar.</p>
+                        <p>Simulador de físicas y colisiones con sonido. Lanza los vehículos entre sí o contra las paredes para detonarlos.</p>
                     </div>
                     <button class="btn-play" onclick="launchGame()">Jugar</button>
                 </div>
@@ -358,11 +358,11 @@
         </section>
     </main>
 
-    <!-- Modal Fullscreen para Baseplate con Autos Realistas y Colisiones Explosivas -->
+    <!-- Modal Fullscreen para Baseplate con Autos, Colisiones y Sonido -->
     <div id="gameContainer" class="fullscreen-game">
         <button class="btn-exit-fullscreen" onclick="exitGame()">Salir (ESC)</button>
         <canvas id="gameCanvas"></canvas>
-        <div class="game-controls-overlay">Arrastra y lanza los autos contra las paredes para detonarlos • Presiona R para reaparecerlos</div>
+        <div class="game-controls-overlay">Arrastra y choca los autos entre sí o contra las paredes para explotarlos • Presiona R para reaparecerlos</div>
     </div>
 
     <script>
@@ -375,7 +375,51 @@
             btn.classList.add('active');
         }
 
-        // Motor Baseplate con Autos Realistas y Colisiones por Impacto
+        // Sintetizador de Audio Web (Efectos de Explosión y Colisión sin archivos externos)
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playExplosionSound() {
+            if (!audioCtx) return;
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            // Crear ruido blanco para la explosión
+            const bufferSize = audioCtx.sampleRate * 0.8;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+
+            // Filtro de bajas frecuencias (estruendo grave)
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+            filter.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.8);
+
+            const gainNode = audioCtx.createGain();
+            gainNode.gain.setValueAtTime(1.0, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+
+            noise.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            noise.start();
+            noise.stop(audioCtx.currentTime + 0.8);
+        }
+
+        // Motor Baseplate con Autos, Colisiones físicas y Sonido
         const container = document.getElementById('gameContainer');
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -411,13 +455,11 @@
             mouseY = e.clientY;
 
             if (draggedCar) {
-                // Calcular velocidad al arrastrar para lanzarlo con fuerza
-                draggedCar.vx = (mouseX - lastMouseX) * 0.8;
-                draggedCar.vy = (mouseY - lastMouseY) * 0.8;
+                draggedCar.vx = (mouseX - lastMouseX) * 0.85;
+                draggedCar.vy = (mouseY - lastMouseY) * 0.85;
                 draggedCar.x = mouseX;
                 draggedCar.y = mouseY;
                 
-                // Orientar el auto hacia donde se mueve el mouse
                 if (Math.abs(draggedCar.vx) > 0.5 || Math.abs(draggedCar.vy) > 0.5) {
                     draggedCar.angle = Math.atan2(draggedCar.vy, draggedCar.vx);
                 }
@@ -426,6 +468,7 @@
 
         window.addEventListener('mousedown', e => {
             if (!container.classList.contains('open') || e.button !== 0) return;
+            initAudio();
             
             for (let i = cars.length - 1; i >= 0; i--) {
                 let c = cars[i];
@@ -449,9 +492,10 @@
         });
 
         function explodeCar(c) {
-            for (let i = 0; i < 50; i++) {
+            playExplosionSound();
+            for (let i = 0; i < 55; i++) {
                 let angle = Math.random() * Math.PI * 2;
-                let speed = Math.random() * 10 + 2;
+                let speed = Math.random() * 11 + 2;
                 particles.push({
                     x: c.x,
                     y: c.y,
@@ -465,6 +509,7 @@
         }
 
         function launchGame() {
+            initAudio();
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             initCars();
@@ -485,30 +530,69 @@
         }
 
         function update() {
+            // Actualizar físicas y colisiones de los autos
             for (let i = cars.length - 1; i >= 0; i--) {
                 let c = cars[i];
                 if (c !== draggedCar) {
                     c.x += c.vx;
                     c.y += c.vy;
-                    c.vx *= 0.95; // Fricción del suelo
+                    c.vx *= 0.95;
                     c.vy *= 0.95;
 
-                    // Detectar colisión fuerte con las paredes para explotar
+                    // Colisión contra las paredes (Paredes explosivas)
                     let margin = 50;
-                    let speedMagnitude = Math.hypot(c.vx, c.vy);
+                    let speedMag = Math.hypot(c.vx, c.vy);
                     let hitWall = (c.x < margin || c.x > canvas.width - margin || c.y < margin || c.y > canvas.height - margin);
 
-                    if (hitWall && speedMagnitude > 4) {
+                    if (hitWall && speedMag > 4.5) {
                         explodeCar(c);
                         cars.splice(i, 1);
                         continue;
                     }
 
-                    // Rebote suave si choca lento contra la pared
                     if (c.x < margin) { c.x = margin; c.vx *= -0.6; }
                     if (c.x > canvas.width - margin) { c.x = canvas.width - margin; c.vx *= -0.6; }
                     if (c.y < margin) { c.y = margin; c.vy *= -0.6; }
                     if (c.y > canvas.height - margin) { c.y = canvas.height - margin; c.vy *= -0.6; }
+
+                    // Colisiones entre vehículos (Auto con Auto)
+                    for (let j = i - 1; j >= 0; j--) {
+                        let other = cars[j];
+                        if (other === draggedCar) continue;
+
+                        let dx = other.x - c.x;
+                        let dy = other.y - c.y;
+                        let dist = Math.hypot(dx, dy);
+                        let minDist = (c.w / 2) + (other.w / 2);
+
+                        if (dist < minDist) {
+                            // Calcular velocidad combinada de impacto entre ambos autos
+                            let relativeSpeed = Math.hypot(c.vx - other.vx, c.vy - other.vy);
+
+                            if (relativeSpeed > 6) {
+                                // ¡Choque violento! Explotan ambos vehículos
+                                explodeCar(c);
+                                explodeCar(other);
+                                cars = cars.filter(item => item !== c && item !== other);
+                                break;
+                            } else {
+                                // Rebote físico elástico suave entre autos
+                                let overlap = minDist - dist;
+                                let angle = Math.atan2(dy, dx);
+                                c.x -= Math.cos(angle) * overlap * 0.5;
+                                c.y -= Math.sin(angle) * overlap * 0.5;
+                                other.x += Math.cos(angle) * overlap * 0.5;
+                                other.y += Math.sin(angle) * overlap * 0.5;
+
+                                let tempVx = c.vx;
+                                let tempVy = c.vy;
+                                c.vx = other.vx * 0.7;
+                                c.vy = other.vy * 0.7;
+                                other.vx = tempVx * 0.7;
+                                other.vy = tempVy * 0.7;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -564,7 +648,7 @@
             ctx.shadowBlur = 8;
             ctx.fillRect(c.w/2 - 6, -c.h/2 + 6, 6, 8);
             ctx.fillRect(c.w/2 - 6, c.h/2 - 14, 6, 8);
-            ctx.shadowBlur = 0; // Resetear sombra
+            ctx.shadowBlur = 0;
 
             ctx.restore();
         }
