@@ -314,7 +314,7 @@
                 <div class="card">
                     <div class="card-info">
                         <h3>Baseplate</h3>
-                        <p>Entorno experimental de físicas. Arrastra los autos por el escenario y haz clic derecho sobre ellos para hacerlos explotar.</p>
+                        <p>Simulador de físicas de impactos. Arrastra los vehículos deportivos y lánzalos contra las paredes para hacerlos estallar.</p>
                     </div>
                     <button class="btn-play" onclick="launchGame()">Jugar</button>
                 </div>
@@ -358,11 +358,11 @@
         </section>
     </main>
 
-    <!-- Modal Fullscreen para Baseplate con Autos y Explosiones -->
+    <!-- Modal Fullscreen para Baseplate con Autos Realistas y Colisiones Explosivas -->
     <div id="gameContainer" class="fullscreen-game">
         <button class="btn-exit-fullscreen" onclick="exitGame()">Salir (ESC)</button>
         <canvas id="gameCanvas"></canvas>
-        <div class="game-controls-overlay">Mantén click izquierdo para arrastrar un auto • Click derecho para hacerlo explotar • Tecla R para reaparecer autos</div>
+        <div class="game-controls-overlay">Arrastra y lanza los autos contra las paredes para detonarlos • Presiona R para reaparecerlos</div>
     </div>
 
     <script>
@@ -375,7 +375,7 @@
             btn.classList.add('active');
         }
 
-        // Motor Baseplate con Autos y Física de Explosiones
+        // Motor Baseplate con Autos Realistas y Colisiones por Impacto
         const container = document.getElementById('gameContainer');
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -386,12 +386,14 @@
         let draggedCar = null;
         let mouseX = 0;
         let mouseY = 0;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
 
         function initCars() {
             cars = [
-                { x: window.innerWidth * 0.3, y: window.innerHeight * 0.4, w: 90, h: 45, color: '#ef4444', vx: 0, vy: 0, angle: 0 },
-                { x: window.innerWidth * 0.5, y: window.innerHeight * 0.6, w: 90, h: 45, color: '#3b82f6', vx: 0, vy: 0, angle: 0 },
-                { x: window.innerWidth * 0.7, y: window.innerHeight * 0.4, w: 90, h: 45, color: '#10b981', vx: 0, vy: 0, angle: 0 }
+                { x: window.innerWidth * 0.3, y: window.innerHeight * 0.4, w: 120, h: 56, color: '#dc2626', vx: 0, vy: 0, angle: 0 },
+                { x: window.innerWidth * 0.5, y: window.innerHeight * 0.6, w: 120, h: 56, color: '#2563eb', vx: 0, vy: 0, angle: 0 },
+                { x: window.innerWidth * 0.7, y: window.innerHeight * 0.4, w: 120, h: 56, color: '#16a34a', vx: 0, vy: 0, angle: 0 }
             ];
         }
 
@@ -403,29 +405,33 @@
         });
 
         window.addEventListener('mousemove', e => {
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
             mouseX = e.clientX;
             mouseY = e.clientY;
+
             if (draggedCar) {
-                draggedCar.vx = (mouseX - draggedCar.x) * 0.3;
-                draggedCar.vy = (mouseY - draggedCar.y) * 0.3;
+                // Calcular velocidad al arrastrar para lanzarlo con fuerza
+                draggedCar.vx = (mouseX - lastMouseX) * 0.8;
+                draggedCar.vy = (mouseY - lastMouseY) * 0.8;
                 draggedCar.x = mouseX;
                 draggedCar.y = mouseY;
+                
+                // Orientar el auto hacia donde se mueve el mouse
+                if (Math.abs(draggedCar.vx) > 0.5 || Math.abs(draggedCar.vy) > 0.5) {
+                    draggedCar.angle = Math.atan2(draggedCar.vy, draggedCar.vx);
+                }
             }
         });
 
         window.addEventListener('mousedown', e => {
-            if (!container.classList.contains('open')) return;
+            if (!container.classList.contains('open') || e.button !== 0) return;
             
-            // Buscar si hizo click en algún auto
             for (let i = cars.length - 1; i >= 0; i--) {
                 let c = cars[i];
-                if (Math.abs(mouseX - c.x) < c.w / 2 && Math.abs(mouseY - c.y) < c.h / 2) {
-                    if (e.button === 0) { // Click izquierdo: Arrastrar
-                        draggedCar = c;
-                    } else if (e.button === 2) { // Click derecho: Explosión
-                        explodeCar(c);
-                        cars.splice(i, 1);
-                    }
+                let dist = Math.hypot(mouseX - c.x, mouseY - c.y);
+                if (dist < c.w / 2) {
+                    draggedCar = c;
                     break;
                 }
             }
@@ -433,11 +439,6 @@
 
         window.addEventListener('mouseup', () => {
             draggedCar = null;
-        });
-
-        // Prevenir menú contextual en click derecho dentro del canvas
-        window.addEventListener('contextmenu', e => {
-            if (container.classList.contains('open')) e.preventDefault();
         });
 
         window.addEventListener('keydown', e => {
@@ -448,18 +449,17 @@
         });
 
         function explodeCar(c) {
-            // Generar partículas de explosión
-            for (let i = 0; i < 40; i++) {
+            for (let i = 0; i < 50; i++) {
                 let angle = Math.random() * Math.PI * 2;
-                let speed = Math.random() * 8 + 2;
+                let speed = Math.random() * 10 + 2;
                 particles.push({
                     x: c.x,
                     y: c.y,
                     vx: Math.cos(angle) * speed,
                     vy: Math.sin(angle) * speed,
                     alpha: 1,
-                    color: Math.random() > 0.5 ? '#f97316' : '#ef4444',
-                    size: Math.random() * 6 + 2
+                    color: Math.random() > 0.4 ? '#f97316' : '#ef4444',
+                    size: Math.random() * 7 + 3
                 });
             }
         }
@@ -485,19 +485,30 @@
         }
 
         function update() {
-            // Actualizar física de autos si no se están arrastrando
-            for (let c of cars) {
+            for (let i = cars.length - 1; i >= 0; i--) {
+                let c = cars[i];
                 if (c !== draggedCar) {
                     c.x += c.vx;
                     c.y += c.vy;
-                    c.vx *= 0.92;
-                    c.vy *= 0.92;
+                    c.vx *= 0.95; // Fricción del suelo
+                    c.vy *= 0.95;
 
-                    // Rebotes en los bordes de la pantalla
-                    if (c.x < 60) { c.x = 60; c.vx *= -0.5; }
-                    if (c.x > canvas.width - 60) { c.x = canvas.width - 60; c.vx *= -0.5; }
-                    if (c.y < 60) { c.y = 60; c.vy *= -0.5; }
-                    if (c.y > canvas.height - 60) { c.y = canvas.height - 60; c.vy *= -0.5; }
+                    // Detectar colisión fuerte con las paredes para explotar
+                    let margin = 50;
+                    let speedMagnitude = Math.hypot(c.vx, c.vy);
+                    let hitWall = (c.x < margin || c.x > canvas.width - margin || c.y < margin || c.y > canvas.height - margin);
+
+                    if (hitWall && speedMagnitude > 4) {
+                        explodeCar(c);
+                        cars.splice(i, 1);
+                        continue;
+                    }
+
+                    // Rebote suave si choca lento contra la pared
+                    if (c.x < margin) { c.x = margin; c.vx *= -0.6; }
+                    if (c.x > canvas.width - margin) { c.x = canvas.width - margin; c.vx *= -0.6; }
+                    if (c.y < margin) { c.y = margin; c.vy *= -0.6; }
+                    if (c.y > canvas.height - margin) { c.y = canvas.height - margin; c.vy *= -0.6; }
                 }
             }
 
@@ -506,31 +517,54 @@
                 let p = particles[i];
                 p.x += p.vx;
                 p.y += p.vy;
-                p.alpha -= 0.025;
+                p.alpha -= 0.02;
                 if (p.alpha <= 0) particles.splice(i, 1);
             }
         }
 
-        function drawCar(c) {
+        function drawRealisticCar(c) {
             ctx.save();
             ctx.translate(c.x, c.y);
+            ctx.rotate(c.angle);
 
-            // Carrocería del auto
-            ctx.fillStyle = c.color;
+            // Sombra del vehículo
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
             ctx.beginPath();
-            ctx.roundRect(-c.w/2, -c.h/2, c.w, c.h, 8);
+            ctx.roundRect(-c.w/2 + 4, -c.h/2 + 6, c.w, c.h, 12);
             ctx.fill();
 
-            // Parabrisas / Ventanas
-            ctx.fillStyle = '#09090b';
-            ctx.fillRect(-c.w/4, -c.h/2 + 6, c.w/2, c.h - 12);
-
-            // Ruedas
+            // Ruedas detalladas con rines
             ctx.fillStyle = '#18181b';
-            ctx.fillRect(-c.w/2 - 4, -c.h/2 - 4, 10, 8);
-            ctx.fillRect(c.w/2 - 6, -c.h/2 - 4, 10, 8);
-            ctx.fillRect(-c.w/2 - 4, c.h/2 - 4, 10, 8);
-            ctx.fillRect(c.w/2 - 6, c.h/2 - 4, 10, 8);
+            ctx.fillRect(-c.w/2 + 10, -c.h/2 - 6, 22, 10);
+            ctx.fillRect(c.w/2 - 32, -c.h/2 - 6, 22, 10);
+            ctx.fillRect(-c.w/2 + 10, c.h/2 - 4, 22, 10);
+            ctx.fillRect(c.w/2 - 32, c.h/2 - 4, 22, 10);
+
+            // Carrocería deportiva principal
+            ctx.fillStyle = c.color;
+            ctx.beginPath();
+            ctx.roundRect(-c.w/2, -c.h/2, c.w, c.h, 14);
+            ctx.fill();
+
+            // Capó y detalles frontales
+            ctx.fillStyle = '#111113';
+            ctx.beginPath();
+            ctx.roundRect(-c.w/2 + 8, -c.h/2 + 8, c.w - 16, c.h - 16, 8);
+            ctx.fill();
+
+            // Parabrisas y cabina aerodinámica
+            ctx.fillStyle = '#1e1e24';
+            ctx.beginPath();
+            ctx.roundRect(-c.w/6, -c.h/2 + 12, c.w/2.5, c.h - 24, 6);
+            ctx.fill();
+
+            // Luces delanteras (LED blancas)
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = '#ffffff';
+            ctx.shadowBlur = 8;
+            ctx.fillRect(c.w/2 - 6, -c.h/2 + 6, 6, 8);
+            ctx.fillRect(c.w/2 - 6, c.h/2 - 14, 6, 8);
+            ctx.shadowBlur = 0; // Resetear sombra
 
             ctx.restore();
         }
@@ -557,9 +591,9 @@
                 ctx.stroke();
             }
 
-            // Dibujar autos
+            // Dibujar autos realistas
             for (let c of cars) {
-                drawCar(c);
+                drawRealisticCar(c);
             }
 
             // Dibujar partículas de explosión
