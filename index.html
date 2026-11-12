@@ -12,6 +12,7 @@
             --border: #232328;
             --text-primary: #ededed;
             --text-secondary: #71717a;
+            --accent: #ffffff;
         }
 
         * {
@@ -28,6 +29,121 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
+        }
+
+        /* Pantalla de Autenticación (Login / Registro) */
+        #authScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+        }
+
+        .auth-card {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .auth-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .auth-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: -10px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            background-color: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #52525b;
+        }
+
+        .btn-auth {
+            background-color: var(--text-primary);
+            color: var(--bg);
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-auth:hover {
+            opacity: 0.9;
+        }
+
+        .auth-switch {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: center;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .auth-switch span {
+            color: var(--text-primary);
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 12px;
+            text-align: center;
+            min-height: 16px;
+        }
+
+        /* Aplicación Principal (Oculta hasta iniciar sesión) */
+        #appContainer {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
         }
 
         /* Sidebar Minimalista */
@@ -98,9 +214,15 @@
         .user-profile {
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: space-between;
             padding-top: 20px;
             border-top: 1px solid var(--border);
+        }
+
+        .user-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .user-avatar {
@@ -125,9 +247,18 @@
             font-weight: 600;
         }
 
-        .user-role {
-            font-size: 11px;
+        .btn-logout {
+            background: none;
+            border: none;
             color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .btn-logout:hover {
+            color: #ef4444;
         }
 
         /* Área de Contenido Principal */
@@ -269,104 +400,216 @@
 </head>
 <body>
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="nav-group">
-            <div class="brand">tino.fun</div>
-            
-            <div>
-                <div class="nav-label" style="margin-bottom: 12px;">Menú</div>
-                <ul class="nav-list">
-                    <li class="nav-item"><button class="active" onclick="switchTab('inicio', this)">Inicio</button></li>
-                    <li class="nav-item"><button onclick="switchTab('explorar', this)">Explorar</button></li>
-                    <li class="nav-item"><button onclick="switchTab('populares', this)">Populares</button></li>
-                </ul>
+    <!-- Pantalla de Autenticación (Login / Registro) -->
+    <div id="authScreen">
+        <div class="auth-card" id="cardRegister">
+            <h2>Crear Cuenta en tino.fun</h2>
+            <p>Regístrate para acceder a la plataforma</p>
+            <div class="form-group">
+                <label>Nombre de Usuario</label>
+                <input type="text" id="regUser" placeholder="Ej. Santino">
             </div>
-
-            <div>
-                <div class="nav-label" style="margin-bottom: 12px;">Comunidad</div>
-                <ul class="nav-list">
-                    <li class="nav-item"><button onclick="switchTab('perfil', this)">Perfil</button></li>
-                    <li class="nav-item"><button onclick="switchTab('amigos', this)">Amigos</button></li>
-                </ul>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="regPass" placeholder="••••••••">
             </div>
+            <div class="error-msg" id="regError"></div>
+            <button class="btn-auth" onclick="handleRegister()">Registrarse</button>
+            <div class="auth-switch" onclick="toggleAuthMode()">¿Ya tienes cuenta? <span>Inicia Sesión</span></div>
         </div>
 
-        <div class="user-profile">
-            <div class="user-avatar">S</div>
-            <div class="user-info">
-                <span class="user-name">Santino</span>
-                <span class="user-role">Fundador</span>
+        <div class="auth-card" id="cardLogin" style="display: none;">
+            <h2>Iniciar Sesión</h2>
+            <p>Ingresa con tu contraseña guardada</p>
+            <div class="form-group">
+                <label>Nombre de Usuario</label>
+                <input type="text" id="logUser" placeholder="Ej. Santino">
             </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="logPass" placeholder="••••••••">
+            </div>
+            <div class="error-msg" id="logError"></div>
+            <button class="btn-auth" onclick="handleLogin()">Entrar</button>
+            <div class="auth-switch" onclick="toggleAuthMode()">¿No tienes cuenta? <span>Regístrate</span></div>
         </div>
-    </aside>
+    </div>
 
-    <!-- Main -->
-    <main class="main">
-        <!-- Pestaña Inicio -->
-        <section id="tab-inicio" class="tab-content active">
-            <div class="header">
-                <h1>Librería</h1>
-                <p>Experimentos interactivos y minijuegos web.</p>
-            </div>
+    <!-- Contenedor Principal de la Web (Oculto hasta autenticarse) -->
+    <div id="appContainer">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="nav-group">
+                <div class="brand">tino.fun</div>
+                
+                <div>
+                    <div class="nav-label" style="margin-bottom: 12px;">Menú</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><button class="active" onclick="switchTab('inicio', this)">Inicio</button></li>
+                        <li class="nav-item"><button onclick="switchTab('explorar', this)">Explorar</button></li>
+                        <li class="nav-item"><button onclick="switchTab('populares', this)">Populares</button></li>
+                    </ul>
+                </div>
 
-            <div class="grid">
-                <div class="card">
-                    <div class="card-info">
-                        <h3>Baseplate</h3>
-                        <p>Simulador de físicas y colisiones con sonido. Lanza los vehículos entre sí o contra las paredes para detonarlos.</p>
-                    </div>
-                    <button class="btn-play" onclick="launchGame()">Jugar</button>
+                <div>
+                    <div class="nav-label" style="margin-bottom: 12px;">Comunidad</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><button onclick="switchTab('perfil', this)">Perfil</button></li>
+                        <li class="nav-item"><button onclick="switchTab('amigos', this)">Amigos</button></li>
+                    </ul>
                 </div>
             </div>
-        </section>
 
-        <!-- Pestaña Explorar -->
-        <section id="tab-explorar" class="tab-content">
-            <div class="header">
-                <h1>Explorar</h1>
-                <p>Nuevos conceptos en desarrollo.</p>
+            <div class="user-profile">
+                <div class="user-left">
+                    <div class="user-avatar" id="userAvatarLetter">S</div>
+                    <div class="user-info">
+                        <span class="user-name" id="displayUsername">Santino</span>
+                    </div>
+                </div>
+                <button class="btn-logout" onclick="logout()" title="Cerrar Sesión">Salir</button>
             </div>
-            <p style="color: var(--text-secondary); font-size: 14px;">Próximamente más experimentos.</p>
-        </section>
+        </aside>
 
-        <!-- Pestaña Populares -->
-        <section id="tab-populares" class="tab-content">
-            <div class="header">
-                <h1>Populares</h1>
-                <p>Lo más visitado de la plataforma.</p>
-            </div>
-            <p style="color: var(--text-secondary); font-size: 14px;">Baseplate encabeza la lista.</p>
-        </section>
+        <!-- Main -->
+        <main class="main">
+            <!-- Pestaña Inicio -->
+            <section id="tab-inicio" class="tab-content active">
+                <div class="header">
+                    <h1>Librería</h1>
+                    <p>Experimentos interactivos y minijuegos web.</p>
+                </div>
 
-        <!-- Pestaña Perfil -->
-        <section id="tab-perfil" class="tab-content">
-            <div class="header">
-                <h1>Perfil</h1>
-                <p>Información de cuenta y registros.</p>
-            </div>
-            <p style="color: var(--text-secondary); font-size: 14px;">Conectado como <strong>Santino</strong></p>
-        </section>
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-info">
+                            <h3>Baseplate</h3>
+                            <p>Simulador de físicas con sonido y explosiones por impacto contra las paredes. Lanza los vehículos libremente.</p>
+                        </div>
+                        <button class="btn-play" onclick="launchGame()">Jugar</button>
+                    </div>
+                </div>
+            </section>
 
-        <!-- Pestaña Amigos -->
-        <section id="tab-amigos" class="tab-content">
-            <div class="header">
-                <h1>Amigos</h1>
-                <p>Red de creadores y jugadores.</p>
-            </div>
-            <p style="color: var(--text-secondary); font-size: 14px;">Sin conexiones activas.</p>
-        </section>
-    </main>
+            <!-- Pestaña Explorar -->
+            <section id="tab-explorar" class="tab-content">
+                <div class="header">
+                    <h1>Explorar</h1>
+                    <p>Nuevos conceptos en desarrollo.</p>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 14px;">Próximamente más experimentos.</p>
+            </section>
 
-    <!-- Modal Fullscreen para Baseplate con Autos, Colisiones y Sonido -->
+            <!-- Pestaña Populares -->
+            <section id="tab-populares" class="tab-content">
+                <div class="header">
+                    <h1>Populares</h1>
+                    <p>Lo más visitado de la plataforma.</p>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 14px;">Baseplate encabeza la lista.</p>
+            </section>
+
+            <!-- Pestaña Perfil -->
+            <section id="tab-perfil" class="tab-content">
+                <div class="header">
+                    <h1>Perfil</h1>
+                    <p>Información de cuenta y registros.</p>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 14px;">Conectado como <strong id="profileUsername">Santino</strong></p>
+            </section>
+
+            <!-- Pestaña Amigos -->
+            <section id="tab-amigos" class="tab-content">
+                <div class="header">
+                    <h1>Amigos</h1>
+                    <p>Red de creadores y jugadores.</p>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 14px;">Sin conexiones activas.</p>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Fullscreen para Baseplate -->
     <div id="gameContainer" class="fullscreen-game">
         <button class="btn-exit-fullscreen" onclick="exitGame()">Salir (ESC)</button>
         <canvas id="gameCanvas"></canvas>
-        <div class="game-controls-overlay">Arrastra y choca los autos entre sí o contra las paredes para explotarlos • Presiona R para reaparecerlos</div>
+        <div class="game-controls-overlay">Arrastra y lanza los autos contra las paredes para explotarlos • Presiona R para reaparecerlos</div>
     </div>
 
     <script>
-        // Sistema de Pestañas
+        // --- SISTEMA DE AUTENTICACIÓN ---
+        function toggleAuthMode() {
+            const regCard = document.getElementById('cardRegister');
+            const logCard = document.getElementById('cardLogin');
+            if (regCard.style.display === 'none') {
+                regCard.style.display = 'flex';
+                logCard.style.display = 'none';
+            } else {
+                regCard.style.display = 'none';
+                logCard.style.display = 'flex';
+            }
+        }
+
+        function handleRegister() {
+            const user = document.getElementById('regUser').value.trim();
+            const pass = document.getElementById('regPass').value.trim();
+            const err = document.getElementById('regError');
+
+            if (!user || !pass) {
+                err.textContent = "Completa todos los campos.";
+                return;
+            }
+
+            // Guardar usuario en LocalStorage
+            localStorage.setItem('tino_user_' + user, pass);
+            localStorage.setItem('tino_current_session', user);
+            initApp(user);
+        }
+
+        function handleLogin() {
+            const user = document.getElementById('logUser').value.trim();
+            const pass = document.getElementById('logPass').value.trim();
+            const err = document.getElementById('logError');
+
+            const savedPass = localStorage.getItem('tino_user_' + user);
+
+            if (!savedPass) {
+                err.textContent = "El usuario no existe. ¡Regístrate primero!";
+                return;
+            }
+
+            if (savedPass !== pass) {
+                err.textContent = "Contraseña incorrecta.";
+                return;
+            }
+
+            localStorage.setItem('tino_current_session', user);
+            initApp(user);
+        }
+
+        function initApp(username) {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'flex';
+            document.getElementById('displayUsername').textContent = username;
+            document.getElementById('profileUsername').textContent = username;
+            document.getElementById('userAvatarLetter').textContent = username.charAt(0).toUpperCase();
+        }
+
+        function logout() {
+            localStorage.removeItem('tino_current_session');
+            location.reload();
+        }
+
+        // Verificar si ya hay una sesión activa al cargar
+        window.addEventListener('DOMContentLoaded', () => {
+            const activeUser = localStorage.getItem('tino_current_session');
+            if (activeUser) {
+                initApp(activeUser);
+            }
+        });
+
+
+        // --- SISTEMA DE PESTAÑAS ---
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item button').forEach(b => b.classList.remove('active'));
@@ -375,7 +618,8 @@
             btn.classList.add('active');
         }
 
-        // Sintetizador de Audio Web (Efectos de Explosión y Colisión sin archivos externos)
+
+        // --- SINTETIZADOR DE AUDIO WEB (Explosión) ---
         let audioCtx = null;
 
         function initAudio() {
@@ -390,7 +634,6 @@
                 audioCtx.resume();
             }
 
-            // Crear ruido blanco para la explosión
             const bufferSize = audioCtx.sampleRate * 0.8;
             const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
             const data = buffer.getChannelData(0);
@@ -401,7 +644,6 @@
             const noise = audioCtx.createBufferSource();
             noise.buffer = buffer;
 
-            // Filtro de bajas frecuencias (estruendo grave)
             const filter = audioCtx.createBiquadFilter();
             filter.type = 'lowpass';
             filter.frequency.setValueAtTime(800, audioCtx.currentTime);
@@ -419,7 +661,8 @@
             noise.stop(audioCtx.currentTime + 0.8);
         }
 
-        // Motor Baseplate con Autos, Colisiones físicas y Sonido
+
+        // --- MOTOR BASEPLATE (Autos libres + Explosión por pared) ---
         const container = document.getElementById('gameContainer');
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -530,7 +773,6 @@
         }
 
         function update() {
-            // Actualizar físicas y colisiones de los autos
             for (let i = cars.length - 1; i >= 0; i--) {
                 let c = cars[i];
                 if (c !== draggedCar) {
@@ -539,7 +781,7 @@
                     c.vx *= 0.95;
                     c.vy *= 0.95;
 
-                    // Colisión contra las paredes (Paredes explosivas)
+                    // Colisión contra las paredes (Explosión)
                     let margin = 50;
                     let speedMag = Math.hypot(c.vx, c.vy);
                     let hitWall = (c.x < margin || c.x > canvas.width - margin || c.y < margin || c.y > canvas.height - margin);
@@ -554,49 +796,9 @@
                     if (c.x > canvas.width - margin) { c.x = canvas.width - margin; c.vx *= -0.6; }
                     if (c.y < margin) { c.y = margin; c.vy *= -0.6; }
                     if (c.y > canvas.height - margin) { c.y = canvas.height - margin; c.vy *= -0.6; }
-
-                    // Colisiones entre vehículos (Auto con Auto)
-                    for (let j = i - 1; j >= 0; j--) {
-                        let other = cars[j];
-                        if (other === draggedCar) continue;
-
-                        let dx = other.x - c.x;
-                        let dy = other.y - c.y;
-                        let dist = Math.hypot(dx, dy);
-                        let minDist = (c.w / 2) + (other.w / 2);
-
-                        if (dist < minDist) {
-                            // Calcular velocidad combinada de impacto entre ambos autos
-                            let relativeSpeed = Math.hypot(c.vx - other.vx, c.vy - other.vy);
-
-                            if (relativeSpeed > 6) {
-                                // ¡Choque violento! Explotan ambos vehículos
-                                explodeCar(c);
-                                explodeCar(other);
-                                cars = cars.filter(item => item !== c && item !== other);
-                                break;
-                            } else {
-                                // Rebote físico elástico suave entre autos
-                                let overlap = minDist - dist;
-                                let angle = Math.atan2(dy, dx);
-                                c.x -= Math.cos(angle) * overlap * 0.5;
-                                c.y -= Math.sin(angle) * overlap * 0.5;
-                                other.x += Math.cos(angle) * overlap * 0.5;
-                                other.y += Math.sin(angle) * overlap * 0.5;
-
-                                let tempVx = c.vx;
-                                let tempVy = c.vy;
-                                c.vx = other.vx * 0.7;
-                                c.vy = other.vy * 0.7;
-                                other.vx = tempVx * 0.7;
-                                other.vy = tempVy * 0.7;
-                            }
-                        }
-                    }
                 }
             }
 
-            // Actualizar partículas de explosión
             for (let i = particles.length - 1; i >= 0; i--) {
                 let p = particles[i];
                 p.x += p.vx;
@@ -611,38 +813,32 @@
             ctx.translate(c.x, c.y);
             ctx.rotate(c.angle);
 
-            // Sombra del vehículo
             ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
             ctx.beginPath();
             ctx.roundRect(-c.w/2 + 4, -c.h/2 + 6, c.w, c.h, 12);
             ctx.fill();
 
-            // Ruedas detalladas con rines
             ctx.fillStyle = '#18181b';
             ctx.fillRect(-c.w/2 + 10, -c.h/2 - 6, 22, 10);
             ctx.fillRect(c.w/2 - 32, -c.h/2 - 6, 22, 10);
             ctx.fillRect(-c.w/2 + 10, c.h/2 - 4, 22, 10);
             ctx.fillRect(c.w/2 - 32, c.h/2 - 4, 22, 10);
 
-            // Carrocería deportiva principal
             ctx.fillStyle = c.color;
             ctx.beginPath();
             ctx.roundRect(-c.w/2, -c.h/2, c.w, c.h, 14);
             ctx.fill();
 
-            // Capó y detalles frontales
             ctx.fillStyle = '#111113';
             ctx.beginPath();
             ctx.roundRect(-c.w/2 + 8, -c.h/2 + 8, c.w - 16, c.h - 16, 8);
             ctx.fill();
 
-            // Parabrisas y cabina aerodinámica
             ctx.fillStyle = '#1e1e24';
             ctx.beginPath();
             ctx.roundRect(-c.w/6, -c.h/2 + 12, c.w/2.5, c.h - 24, 6);
             ctx.fill();
 
-            // Luces delanteras (LED blancas)
             ctx.fillStyle = '#ffffff';
             ctx.shadowColor = '#ffffff';
             ctx.shadowBlur = 8;
@@ -657,7 +853,6 @@
             ctx.fillStyle = '#09090b';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Rejilla geométrica del Baseplate técnico
             ctx.strokeStyle = '#16161a';
             ctx.lineWidth = 1;
             const gridSize = 50;
@@ -675,12 +870,10 @@
                 ctx.stroke();
             }
 
-            // Dibujar autos realistas
             for (let c of cars) {
                 drawRealisticCar(c);
             }
 
-            // Dibujar partículas de explosión
             for (let p of particles) {
                 ctx.fillStyle = p.color;
                 ctx.globalAlpha = p.alpha;
