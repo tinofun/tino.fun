@@ -3,1360 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tino.fun</title>
+    <title>TinoTown - NeonSparks</title>
     <style>
-        :root {
-            --bg: #09090b;
-            --surface: #121215;
-            --surface-hover: #1a1a1e;
-            --border: #232328;
-            --text-primary: #ededed;
-            --text-secondary: #71717a;
-            --accent: #ffffff;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            user-select: none;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text-primary);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Pantalla de Autenticación */
-        #authScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: var(--bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 99999;
-        }
-
-        .auth-card {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 40px;
-            width: 380px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .auth-card h2 {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: var(--text-primary);
-            text-align: center;
-        }
-
-        .auth-card p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            text-align: center;
-            margin-top: -10px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .form-group input, .form-group textarea {
-            background-color: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 12px;
-            color: var(--text-primary);
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
-            resize: none;
-        }
-
-        .form-group input:focus, .form-group textarea:focus {
-            border-color: #52525b;
-        }
-
-        .btn-auth {
-            background-color: var(--text-primary);
-            color: var(--bg);
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            margin-top: 10px;
-        }
-
-        .btn-auth:hover {
-            opacity: 0.9;
-        }
-
-        .auth-switch {
-            font-size: 13px;
-            color: var(--text-secondary);
-            text-align: center;
-            cursor: pointer;
-            margin-top: 5px;
-        }
-
-        .auth-switch span {
-            color: var(--text-primary);
-            font-weight: 600;
-            text-decoration: underline;
-        }
-
-        .error-msg {
-            color: #ef4444;
-            font-size: 12px;
-            text-align: center;
-            min-height: 16px;
-        }
-
-        /* Aplicación Principal */
-        #appContainer {
-            display: none;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-        }
-
-        /* Sidebar Minimalista */
-        .sidebar {
-            width: 240px;
-            background-color: var(--surface);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 35px 24px;
-        }
-
-        .brand {
-            font-size: 17px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: var(--text-primary);
-            margin-bottom: 45px;
-        }
-
-        .nav-group {
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-        }
-
-        .nav-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-
-        .nav-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .nav-item button {
-            width: 100%;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            padding: 10px 14px;
-            font-size: 14px;
-            font-weight: 500;
-            text-align: left;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .nav-item button:hover {
-            color: var(--text-primary);
-            background-color: var(--surface-hover);
-        }
-
-        .nav-item button.active {
-            color: var(--text-primary);
-            background-color: var(--surface-hover);
-            font-weight: 600;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-        }
-
-        .user-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px; /* Cuadrado con esquinas redondeadas */
-            background: #27272a;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 600;
-            overflow: hidden;
-        }
-
-        .user-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .user-name {
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .btn-logout {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 12px;
-            cursor: pointer;
-            padding: 4px;
-            transition: color 0.2s;
-        }
-
-        .btn-logout:hover {
-            color: #ef4444;
-        }
-
-        /* Área de Contenido Principal */
-        .main {
-            flex-grow: 1;
-            padding: 60px;
-            overflow-y: auto;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .header {
-            margin-bottom: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-
-        .header h1 {
-            font-size: 26px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-        }
-
-        .header p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-top: 6px;
-        }
-
-        /* Grid de Juegos Minimalista */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 28px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 220px;
-            transition: all 0.2s ease;
-        }
-
-        .card:hover {
-            border-color: #3f3f46;
-            transform: translateY(-2px);
-        }
-
-        .card-info h3 {
-            font-size: 17px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .card-info p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-
-        .btn-play {
-            background-color: var(--text-primary);
-            color: var(--bg);
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.15s ease;
-        }
-
-        .btn-play:hover {
-            opacity: 0.9;
-        }
-
-        /* Estilos de Perfil */
-        .profile-container {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .profile-big-avatar {
-            width: 72px;
-            height: 72px;
-            border-radius: 10px; /* Cuadrado con esquinas redondeadas */
-            background: #27272a;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            font-weight: bold;
-            overflow: hidden;
-            border: 2px solid var(--border);
-        }
-
-        .profile-meta h2 {
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .profile-meta p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-
-        .profile-stats {
-            display: flex;
-            gap: 30px;
-            padding: 16px 0;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .stat-item span {
-            font-size: 12px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-item h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-top: 2px;
-        }
-
-        /* Estilos de Amigos */
-        .friends-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 700px;
-        }
-
-        .friends-header-bar {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-        }
-
-        .search-container {
-            display: none;
-            flex-direction: column;
-            gap: 15px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 20px;
-        }
-
-        .search-input {
-            width: 100%;
-            background-color: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px 16px;
-            color: var(--text-primary);
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .search-input:focus {
-            border-color: #52525b;
-        }
-
-        .btn-add-friend {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            width: 46px;
-            height: 46px;
-            border-radius: 8px;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-add-friend:hover {
-            background-color: var(--surface-hover);
-            border-color: #3f3f46;
-        }
-
-        .section-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
-
-        .friends-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .friend-card {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .friend-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .friend-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
-            background: #27272a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        .friend-name {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .friend-status {
-            font-size: 12px;
-            color: #10b981;
-        }
-
-        .btn-small {
-            background-color: var(--text-primary);
-            color: var(--bg);
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .btn-small:hover {
-            opacity: 0.9;
-        }
-
-        /* Modal Fullscreen para Baseplate */
-        .fullscreen-game {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: #000;
-            z-index: 9999;
-        }
-
-        .fullscreen-game.open {
-            display: block;
-        }
-
-        canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        .btn-exit-fullscreen {
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            backdrop-filter: blur(8px);
-            transition: background 0.2s;
-            z-index: 10;
-        }
-
-        .btn-exit-fullscreen:hover {
-            background: rgba(255, 255, 255, 0.18);
-        }
-
-        .game-controls-overlay {
-            position: absolute;
-            bottom: 24px;
-            left: 28px;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 12px;
-            pointer-events: none;
-            letter-spacing: 0.3px;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0f1016; color: #fff; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar de Navegación */
+        sidebar { width: 250px; background: #161824; border-right: 2px solid #25283d; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; }
+        .logo { font-size: 24px; font-weight: bold; color: #00ffcc; text-shadow: 0 0 10px rgba(0,255,204,0.5); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .menu-section { margin-bottom: 20px; }
+        .menu-title { font-size: 12px; text-transform: uppercase; color: #8a8d9f; margin-bottom: 10px; letter-spacing: 1px; }
+        .menu-btn { width: 100%; background: transparent; border: none; color: #c0c2d3; padding: 12px 15px; text-align: left; border-radius: 8px; cursor: pointer; font-size: 15px; margin-bottom: 5px; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        .menu-btn:hover, .menu-btn.active { background: #00ffcc22; color: #00ffcc; border-left: 4px solid #00ffcc; }
+        
+        /* Panel de Usuario */
+        .user-card { background: #1f2233; padding: 12px; border-radius: 10px; display: flex; align-items: center; gap: 10px; }
+        .avatar-mini { width: 40px; height: 40px; background: #00ffcc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f1016; box-shadow: 0 0 8px #00ffcc; }
+        .user-info h4 { font-size: 14px; }
+        .user-info p { font-size: 12px; color: #00ffcc; }
+
+        /* Área Principal del Juego */
+        main { flex: 1; display: flex; flex-direction: column; position: relative; }
+        header { height: 60px; background: #161824; border-bottom: 2px solid #25283d; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; }
+        .room-title h2 { font-size: 18px; color: #fff; }
+        .room-title p { font-size: 12px; color: #8a8d9f; }
+        .stats-badge { background: #1f2233; padding: 6px 14px; border-radius: 20px; font-size: 14px; color: #ffd700; border: 1px solid #333852; }
+
+        /* Lienzo del Mundo (Canvas) */
+        .game-container { flex: 1; position: relative; background: radial-gradient(circle at center, #1b1e2e 0%, #0d0e15 100%); display: flex; justify-content: center; align-items: center; }
+        canvas { background: #13151f; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid #25283d; }
+        
+        /* Controles y Ayuda Flotante */
+        .hud-overlay { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: rgba(22, 24, 36, 0.85); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: #a0a3b8; border: 1px solid #2a2e45; backdrop-filter: blur(5px); }
     </style>
 </head>
 <body>
 
-    <!-- Pantalla de Autenticación -->
-    <div id="authScreen">
-        <div class="auth-card" id="cardRegister">
-            <h2>Crear Cuenta en tino.fun</h2>
-            <p>Regístrate para acceder a la plataforma</p>
-            <div class="form-group">
-                <label>Nombre de Usuario</label>
-                <input type="text" id="regUser" placeholder="Ej. Santino">
+    <!-- SIDEBAR -->
+    <sidebar>
+        <div>
+            <div class="logo">⚡ TinoTown</div>
+            
+            <div class="menu-section">
+                <div class="menu-title">Salas</div>
+                <button class="menu-btn active" onclick="switchRoom('Plaza')">🏙️ Plaza Central</button>
+                <button class="menu-btn" onclick="switchRoom('Arcade')">🕹️ Arcade (Minijuegos)</button>
+                <button class="menu-btn" onclick="switchRoom('Tienda')">👕 Tienda de Ropa</button>
+                <button class="menu-btn" onclick="switchRoom('Iglú')">🏠 Mi Iglú</button>
             </div>
-            <div class="form-group">
-                <label>Contraseña</label>
-                <input type="password" id="regPass" placeholder="••••••••">
+            
+            <div class="menu-section">
+                <div class="menu-title">Social</div>
+                <button class="menu-btn" onclick="alert('¡Próximamente sistema de amigos online!')">👥 Amigos</button>
+                <button class="menu-btn" onclick="alert('Escribe en el chat con la tecla Enter dentro del juego')">💬 Chat Global</button>
             </div>
-            <div class="error-msg" id="regError"></div>
-            <button class="btn-auth" onclick="handleRegister()">Registrarse</button>
-            <div class="auth-switch" onclick="toggleAuthMode()">¿Ya tienes cuenta? <span>Inicia Sesión</span></div>
         </div>
 
-        <div class="auth-card" id="cardLogin" style="display: none;">
-            <h2>Iniciar Sesión</h2>
-            <p>Ingresa con tu contraseña guardada</p>
-            <div class="form-group">
-                <label>Nombre de Usuario</label>
-                <input type="text" id="logUser" placeholder="Ej. Santino">
+        <div class="user-card">
+            <div class="avatar-mini">S</div>
+            <div class="user-info">
+                <h4>Santino</h4>
+                <p id="coins-display">🪙 250 TinoCoins</p>
             </div>
-            <div class="form-group">
-                <label>Contraseña</label>
-                <input type="password" id="logPass" placeholder="••••••••">
-            </div>
-            <div class="error-msg" id="logError"></div>
-            <button class="btn-auth" onclick="handleLogin()">Entrar</button>
-            <div class="auth-switch" onclick="toggleAuthMode()">¿No tienes cuenta? <span>Regístrate</span></div>
         </div>
-    </div>
+    </sidebar>
 
-    <!-- Contenedor Principal -->
-    <div id="appContainer">
-        <aside class="sidebar">
-            <div class="nav-group">
-                <div class="brand">tino.fun</div>
-                
-                <div>
-                    <div class="nav-label" style="margin-bottom: 12px;">Menú</div>
-                    <ul class="nav-list">
-                        <li class="nav-item"><button class="active" onclick="switchTab('inicio', this)">Inicio</button></li>
-                        <li class="nav-item"><button onclick="switchTab('explorar', this)">Explorar</button></li>
-                        <li class="nav-item"><button onclick="switchTab('populares', this)">Populares</button></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <div class="nav-label" style="margin-bottom: 12px;">Comunidad</div>
-                    <ul class="nav-list">
-                        <li class="nav-item"><button onclick="switchTab('perfil', this)">Perfil</button></li>
-                        <li class="nav-item"><button onclick="switchTab('amigos', this)">Amigos</button></li>
-                    </ul>
-                </div>
+    <!-- MAIN APP -->
+    <main>
+        <header>
+            <div class="room-title">
+                <h2 id="current-room-name">Plaza Central</h2>
+                <p>Punto de encuentro de los NeonSparks</p>
             </div>
+            <div class="stats-badge" id="room-status">Estado: En línea 🟢</div>
+        </header>
 
-            <div class="user-profile">
-                <div class="user-left">
-                    <div class="user-avatar" id="userAvatarLetter">S</div>
-                    <div class="user-info">
-                        <span class="user-name" id="displayUsername">Santino</span>
-                    </div>
-                </div>
-                <button class="btn-logout" onclick="logout()" title="Cerrar Sesión">Salir</button>
-            </div>
-        </aside>
-
-        <main class="main">
-            <!-- Pestaña Inicio -->
-            <section id="tab-inicio" class="tab-content active">
-                <div class="header">
-                    <div>
-                        <h1>Librería</h1>
-                        <p>Experimentos interactivos y minijuegos web.</p>
-                    </div>
-                </div>
-
-                <div class="grid">
-                    <div class="card">
-                        <div class="card-info">
-                            <h3>Baseplate</h3>
-                            <p>Simulador de físicas con sonido y explosiones por impacto contra las paredes. Lanza los vehículos libremente.</p>
-                        </div>
-                        <button class="btn-play" onclick="launchGame()">Jugar</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Pestaña Explorar -->
-            <section id="tab-explorar" class="tab-content">
-                <div class="header">
-                    <div>
-                        <h1>Explorar</h1>
-                        <p>Nuevos conceptos en desarrollo.</p>
-                    </div>
-                </div>
-                <p style="color: var(--text-secondary); font-size: 14px;">Próximamente más experimentos.</p>
-            </section>
-
-            <!-- Pestaña Populares -->
-            <section id="tab-populares" class="tab-content">
-                <div class="header">
-                    <div>
-                        <h1>Populares</h1>
-                        <p>Lo más visitado de la plataforma.</p>
-                    </div>
-                </div>
-                <p style="color: var(--text-secondary); font-size: 14px;">Baseplate encabeza la lista.</p>
-            </section>
-
-            <!-- Pestaña Perfil -->
-            <section id="tab-perfil" class="tab-content">
-                <div class="header">
-                    <div>
-                        <h1>Perfil</h1>
-                        <p>Personalización y configuración de cuenta.</p>
-                    </div>
-                </div>
-
-                <div class="profile-container">
-                    <div class="profile-header">
-                        <div class="profile-big-avatar" id="profileBigAvatar">S</div>
-                        <div class="profile-meta">
-                            <h2 id="profileUsername">Santino</h2>
-                            <p id="profileCreatedDate">Creado el: --/--/----</p>
-                        </div>
-                    </div>
-
-                    <div class="profile-stats">
-                        <div class="stat-item">
-                            <span>Amigos</span>
-                            <h3 id="profileFriendsCount">0</h3>
-                        </div>
-                        <div class="stat-item">
-                            <span>Seguidores</span>
-                            <h3 id="profileFollowersCount">0</h3>
-                        </div>
-                        <div class="stat-item">
-                            <span>Estado</span>
-                            <h3 style="color: #10b981;">Online</h3>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Foto de Perfil (Subir imagen JPG o PNG)</label>
-                        <input type="file" id="profileImageInput" accept="image/png, image/jpeg" style="background: var(--bg); cursor: pointer;">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Descripción de Perfil</label>
-                        <textarea id="profileBioInput" rows="3" placeholder="Escribe algo sobre ti..."></textarea>
-                    </div>
-                    <button class="btn-small" style="width: fit-content;" onclick="saveProfile()">Guardar Cambios</button>
-                </div>
-            </section>
-
-            <!-- Pestaña Amigos -->
-            <section id="tab-amigos" class="tab-content">
-                <div class="header">
-                    <div>
-                        <h1>Amigos</h1>
-                        <p>Gestiona tus contactos y solicitudes.</p>
-                    </div>
-                </div>
-
-                <div class="friends-container">
-                    <div class="friends-header-bar">
-                        <button class="btn-add-friend" onclick="toggleSearchBox()" title="Buscar y Jugadores Recientes">+</button>
-                    </div>
-
-                    <!-- Buscador y Jugadores Recientes (Oculto hasta hacer clic en "+") -->
-                    <div id="searchContainer" class="search-container">
-                        <div class="section-title">Buscar Usuario</div>
-                        <input type="text" id="friendSearchInput" class="search-input" placeholder="🔍 Escribe un nombre..." oninput="filterFriends()">
-
-                        <div class="section-title" style="margin-top: 5px;">Jugadores Recientes (Partida anterior)</div>
-                        <div class="friends-list" id="recentPlayersList">
-                            <!-- Se llena por JS -->
-                        </div>
-                    </div>
-
-                    <div class="section-title">Amigos Agregados (<span id="friendsCountBadge">0</span>)</div>
-                    <div class="friends-list" id="friendsListContainer">
-                        <!-- Amigos del usuario -->
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Modal Fullscreen para Baseplate -->
-    <div id="gameContainer" class="fullscreen-game">
-        <button class="btn-exit-fullscreen" onclick="exitGame()">Salir (ESC)</button>
-        <canvas id="gameCanvas"></canvas>
-        <div class="game-controls-overlay">Arrastra y lanza los autos contra las paredes para explotarlos • Presiona R para reaparecerlos</div>
-    </div>
+        <div class="game-container">
+            <canvas id="gameCanvas" width="800" height="500"></canvas>
+            <div class="hud-overlay">Usa <b>WASD</b> o <b>Flechas</b> para moverte • Presiona <b>Enter</b> para hablar</div>
+        </div>
+    </main>
 
     <script>
-        // --- BASE DE DATOS LOCAL Y SESIÓN ---
-        let currentUser = null;
-
-        function toggleAuthMode() {
-            const regCard = document.getElementById('cardRegister');
-            const logCard = document.getElementById('cardLogin');
-            if (regCard.style.display === 'none') {
-                regCard.style.display = 'flex';
-                logCard.style.display = 'none';
-            } else {
-                regCard.style.display = 'none';
-                logCard.style.display = 'flex';
-            }
-        }
-
-        function handleRegister() {
-            const user = document.getElementById('regUser').value.trim();
-            const pass = document.getElementById('regPass').value.trim();
-            const err = document.getElementById('regError');
-
-            if (!user || !pass) {
-                err.textContent = "Completa todos los campos.";
-                return;
-            }
-
-            if (localStorage.getItem('tino_user_' + user)) {
-                err.textContent = "El usuario ya existe. Inicia sesión.";
-                return;
-            }
-
-            const creationDate = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-            const userData = {
-                pass: pass,
-                created: creationDate,
-                bio: "¡Hola! Estoy usando tino.fun",
-                avatar: "",
-                followers: 0, // Arranca en 0 seguidores reales
-                friends: ["KekoDev", "AlexGamer"]
-            };
-
-            localStorage.setItem('tino_user_' + user, JSON.stringify(userData));
-            localStorage.setItem('tino_current_session', user);
-            initApp(user);
-        }
-
-        function handleLogin() {
-            const user = document.getElementById('logUser').value.trim();
-            const pass = document.getElementById('logPass').value.trim();
-            const err = document.getElementById('logError');
-
-            const rawData = localStorage.getItem('tino_user_' + user);
-
-            if (!rawData) {
-                err.textContent = "El usuario no existe. ¡Regístrate primero!";
-                return;
-            }
-
-            const userData = JSON.parse(rawData);
-
-            if (userData.pass !== pass) {
-                err.textContent = "Contraseña incorrecta.";
-                return;
-            }
-
-            localStorage.setItem('tino_current_session', user);
-            initApp(user);
-        }
-
-        function initApp(username) {
-            currentUser = username;
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('appContainer').style.display = 'flex';
-            
-            document.getElementById('displayUsername').textContent = username;
-            document.getElementById('profileUsername').textContent = username;
-            
-            loadUserData();
-            loadFriends();
-            loadRecentPlayers();
-        }
-
-        function logout() {
-            localStorage.removeItem('tino_current_session');
-            location.reload();
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const activeUser = localStorage.getItem('tino_current_session');
-            if (activeUser) {
-                initApp(activeUser);
-            }
-        });
-
-        // --- GESTIÓN DE PERFIL Y FOTO DE PERFIL ---
-        function loadUserData() {
-            let data = JSON.parse(localStorage.getItem('tino_user_' + currentUser));
-            if (data) {
-                document.getElementById('profileCreatedDate').textContent = "Creado el: " + (data.created || "11/11/2026");
-                document.getElementById('profileBioInput').value = data.bio || "";
-                document.getElementById('profileFriendsCount').textContent = data.friends ? data.friends.length : 0;
-                document.getElementById('profileFollowersCount').textContent = data.followers !== undefined ? data.followers : 0;
-
-                applyAvatar(data.avatar, currentUser);
-            }
-        }
-
-        function applyAvatar(avatarData, username) {
-            const smallAvatar = document.getElementById('userAvatarLetter');
-            const bigAvatar = document.getElementById('profileBigAvatar');
-
-            if (avatarData) {
-                smallAvatar.style.backgroundImage = `url(${avatarData})`;
-                smallAvatar.textContent = "";
-                bigAvatar.style.backgroundImage = `url(${avatarData})`;
-                bigAvatar.textContent = "";
-            } else {
-                smallAvatar.style.backgroundImage = "none";
-                smallAvatar.textContent = username.charAt(0).toUpperCase();
-                bigAvatar.style.backgroundImage = "none";
-                bigAvatar.textContent = username.charAt(0).toUpperCase();
-            }
-        }
-
-        function saveProfile() {
-            const bioText = document.getElementById('profileBioInput').value;
-            const fileInput = document.getElementById('profileImageInput');
-            
-            let data = JSON.parse(localStorage.getItem('tino_user_' + currentUser));
-            if (data) {
-                data.bio = bioText;
-
-                if (fileInput.files && fileInput.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        data.avatar = e.target.result;
-                        localStorage.setItem('tino_user_' + currentUser, JSON.stringify(data));
-                        applyAvatar(data.avatar, currentUser);
-                        alert("¡Perfil y foto actualizados con éxito!");
-                    };
-                    reader.readAsDataURL(fileInput.files[0]);
-                } else {
-                    localStorage.setItem('tino_user_' + currentUser, JSON.stringify(data));
-                    alert("¡Descripción guardada con éxito!");
-                }
-            }
-        }
-
-        // --- GESTIÓN DE AMIGOS Y BUSCADOR ---
-        const MOCK_ALL_USERS = ["KekoDev", "AlexGamer", "ShadowPro", "CyberNinja", "PixelBoy", "TinoFan99"];
-
-        function toggleSearchBox() {
-            const box = document.getElementById('searchContainer');
-            box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function loadFriends() {
-            let data = JSON.parse(localStorage.getItem('tino_user_' + currentUser));
-            let friends = data && data.friends ? data.friends : [];
-
-            const container = document.getElementById('friendsListContainer');
-            document.getElementById('friendsCountBadge').textContent = friends.length;
-            document.getElementById('profileFriendsCount').textContent = friends.length;
-
-            container.innerHTML = "";
-            if (friends.length === 0) {
-                container.innerHTML = `<p style="color: var(--text-secondary); font-size: 13px;">No tienes amigos agregados aún.</p>`;
-                return;
-            }
-
-            friends.forEach(friend => {
-                container.innerHTML += `
-                    <div class="friend-card">
-                        <div class="friend-info">
-                            <div class="friend-avatar">${friend.charAt(0).toUpperCase()}</div>
-                            <div>
-                                <div class="friend-name">${friend}</div>
-                                <div class="friend-status">● En línea</div>
-                            </div>
-                        </div>
-                        <button class="btn-small" style="background-color: #232328; color: #ef4444;" onclick="removeFriend('${friend}')">Eliminar</button>
-                    </div>
-                `;
-            });
-        }
-
-        function removeFriend(friendName) {
-            let data = JSON.parse(localStorage.getItem('tino_user_' + currentUser));
-            if (data && data.friends) {
-                data.friends = data.friends.filter(f => f !== friendName);
-                localStorage.setItem('tino_user_' + currentUser, JSON.stringify(data));
-                loadFriends();
-            }
-        }
-
-        function filterFriends() {
-            const query = document.getElementById('friendSearchInput').value.toLowerCase();
-            let data = JSON.parse(localStorage.getItem('tino_user_' + currentUser));
-            let friends = data && data.friends ? data.friends : [];
-
-            const container = document.getElementById('friendsListContainer');
-            if (!query) {
-                loadFriends();
-                return;
-            }
-
-            container.innerHTML = "";
-            const filtered = friends.filter(f => f.toLowerCase().includes(query));
-
-            if (filtered.length === 0 && query.length > 0) {
-                let target = query.charAt(0).toUpperCase() + query.slice(1);
-                container.innerHTML = `
-                    <div class="friend-card">
-                        <div class="friend-info">
-                            <div class="friend-avatar">${target.charAt(0)}</div>
-                            <div><div class="friend-name">${target}</div><div style="font-size:12px; color:var(--text-secondary)">Usuario encontrado</div></div>
-                        </div>
-                        <button class="btn-small" onclick="addFriend('${target}')">+ Agregar Amigo</button>
-                    </div>
-                `;
-                return;
-            }
-
-            filtered.forEach(friend => {
-                container.innerHTML += `
-                    <div class="friend-card">
-                        <div class="friend-info">
-                            <div class="friend-avatar">${friend.charAt(0).toUpperCase()}</div>
-                            <div>
-                                <div class="friend-name">${friend}</div>
-                                <div class="friend-status">● En línea</div>
-                            </div>
-                        </div>
-                        <button class="btn-small" style="background-color: #232328; color: #ef4444;" onclick="removeFriend('${friend}')">Eliminar</button>
-                    </div>
-                `;
-            });
-        }
-
-        function loadRecentPlayers() {
-            const recentList = document.getElementById('recentPlayersList');
-            const recentUsers = ["CyberNinja", "ShadowPro", "PixelBoy"];
-
-            recentList.innerHTML = "";
-            recentUsers.forEach(user => {
-                recentList.innerHTML += `
-                    <div class="friend-card" style="background: var(--bg);">
-                        <div class="friend-info">
-                            <div class="friend-avatar">${user.charAt(0)}</div>
-                            <div>
-                                <div class="friend-name">${user}</div>
-                                <div style="font-size: 11px; color: var(--text-secondary);">Jugaron juntos en Baseplate</div>
-                            </div>
-                        </div>
-                        <button class="btn-small" onclick="addFriend('${user}')">+ Agregar</button>
-                    </div>
-                `;
-            });
-        }
-
-        function addFriend(username) {
-            let data = JSON.parse(localStorage.getItem('tino_user_' + currentUser));
-            if (data) {
-                if (!data.friends) data.friends = [];
-                if (!data.friends.includes(username)) {
-                    data.friends.push(username);
-                    localStorage.setItem('tino_user_' + currentUser, JSON.stringify(data));
-                    loadFriends();
-                    alert(`¡Ahora ${username} es tu amigo!`);
-                } else {
-                    alert("Ya tienes a este usuario agregado.");
-                }
-            }
-        }
-
-
-        // --- SISTEMA DE PESTAÑAS ---
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-item button').forEach(b => b.classList.remove('active'));
-            
-            document.getElementById('tab-' + tabId).classList.add('active');
-            btn.classList.add('active');
-        }
-
-
-        // --- SINTETIZADOR DE AUDIO WEB (Explosión) ---
-        let audioCtx = null;
-
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-
-        function playExplosionSound() {
-            if (!audioCtx) return;
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-
-            const bufferSize = audioCtx.sampleRate * 0.8;
-            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                data[i] = Math.random() * 2 - 1;
-            }
-
-            const noise = audioCtx.createBufferSource();
-            noise.buffer = buffer;
-
-            const filter = audioCtx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(800, audioCtx.currentTime);
-            filter.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.8);
-
-            const gainNode = audioCtx.createGain();
-            gainNode.gain.setValueAtTime(1.0, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
-
-            noise.connect(filter);
-            filter.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-
-            noise.start();
-            noise.stop(audioCtx.currentTime + 0.8);
-        }
-
-
-        // --- MOTOR BASEPLATE ---
-        const container = document.getElementById('gameContainer');
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        let animId = null;
 
-        let cars = [];
-        let particles = [];
-        let draggedCar = null;
-        let mouseX = 0;
-        let mouseY = 0;
-        let lastMouseX = 0;
-        let lastMouseY = 0;
+        // Estado del jugador (NeonSpark)
+        let player = {
+            x: 400,
+            y: 250,
+            size: 24,
+            speed: 3.5,
+            color: '#00ffcc',
+            name: 'Santino',
+            message: '',
+            msgTimer: 0
+        };
 
-        function initCars() {
-            cars = [
-                { x: window.innerWidth * 0.3, y: window.innerHeight * 0.4, w: 120, h: 56, color: '#dc2626', vx: 0, vy: 0, angle: 0 },
-                { x: window.innerWidth * 0.5, y: window.innerHeight * 0.6, w: 120, h: 56, color: '#2563eb', vx: 0, vy: 0, angle: 0 },
-                { x: window.innerWidth * 0.7, y: window.innerHeight * 0.4, w: 120, h: 56, color: '#16a34a', vx: 0, vy: 0, angle: 0 }
-            ];
-        }
+        // Bot NPC para dar vida al mundo
+        let npc = {
+            x: 200,
+            y: 150,
+            size: 24,
+            color: '#ff0055',
+            name: 'TinoBot 🤖',
+            message: '¡Bienvenidos a TinoTown!',
+            vx: 1,
+            vy: 0.5
+        };
 
-        window.addEventListener('resize', () => {
-            if (canvas && container.classList.contains('open')) {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-        });
+        let keys = {};
+        let currentRoom = 'Plaza';
+        let coins = 250;
 
-        window.addEventListener('mousemove', e => {
-            lastMouseX = mouseX;
-            lastMouseY = mouseY;
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-
-            if (draggedCar) {
-                draggedCar.vx = (mouseX - lastMouseX) * 0.85;
-                draggedCar.vy = (mouseY - lastMouseY) * 0.85;
-                draggedCar.x = mouseX;
-                draggedCar.y = mouseY;
-                
-                if (Math.abs(draggedCar.vx) > 0.5 || Math.abs(draggedCar.vy) > 0.5) {
-                    draggedCar.angle = Math.atan2(draggedCar.vy, draggedCar.vx);
+        // Escuchar teclado
+        window.addEventListener('keydown', (e) => {
+            keys[e.key.toLowerCase()] = true;
+            if (e.key === 'Enter') {
+                let msg = prompt('¿Qué querés decir en el chat?');
+                if (msg) {
+                    player.message = msg;
+                    player.msgTimer = 300; // Dura 300 frames
                 }
             }
         });
+        window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
 
-        window.addEventListener('mousedown', e => {
-            if (!container.classList.contains('open') || e.button !== 0) return;
-            initAudio();
+        function switchRoom(room) {
+            currentRoom = room;
+            document.getElementById('current-room-name').innerText = room === 'Plaza' ? 'Plaza Central' : room === 'Arcade' ? 'Salón Arcade' : room === 'Tienda' ? 'Tienda de Hoodies' : 'Mi Iglú Personal';
             
-            for (let i = cars.length - 1; i >= 0; i--) {
-                let c = cars[i];
-                let dist = Math.hypot(mouseX - c.x, mouseY - c.y);
-                if (dist < c.w / 2) {
-                    draggedCar = c;
-                    break;
-                }
-            }
-        });
-
-        window.addEventListener('mouseup', () => {
-            draggedCar = null;
-        });
-
-        window.addEventListener('keydown', e => {
-            if (e.key === 'Escape') exitGame();
-            if (e.key.toLowerCase() === 'r' && container.classList.contains('open')) {
-                initCars();
-            }
-        });
-
-        function explodeCar(c) {
-            playExplosionSound();
-            for (let i = 0; i < 55; i++) {
-                let angle = Math.random() * Math.PI * 2;
-                let speed = Math.random() * 11 + 2;
-                particles.push({
-                    x: c.x,
-                    y: c.y,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
-                    alpha: 1,
-                    color: Math.random() > 0.4 ? '#f97316' : '#ef4444',
-                    size: Math.random() * 7 + 3
-                });
-            }
+            // Actualizar botones activos
+            document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
         }
 
-        function launchGame() {
-            initAudio();
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            initCars();
-            container.classList.add('open');
-            if (container.requestFullscreen) {
-                container.requestFullscreen().catch(() => {});
-            }
-            loop();
-        }
-
-        function exitGame() {
-            container.classList.remove('open');
-            if (document.exitFullscreen && document.fullscreenElement) {
-                document.exitFullscreen().catch(() => {});
-            }
-            cancelAnimationFrame(animId);
-            particles = [];
-        }
-
+        // Bucle principal del juego
         function update() {
-            for (let i = cars.length - 1; i >= 0; i--) {
-                let c = cars[i];
-                if (c !== draggedCar) {
-                    c.x += c.vx;
-                    c.y += c.vy;
-                    c.vx *= 0.95;
-                    c.vy *= 0.95;
+            // Movimiento del jugador
+            if (keys['w'] || keys['arrowup']) player.y -= player.speed;
+            if (keys['s'] || keys['arrowdown']) player.y += player.speed;
+            if (keys['a'] || keys['arrowleft']) player.x -= player.speed;
+            if (keys['d'] || keys['arrowright']) player.x += player.speed;
 
-                    let margin = 50;
-                    let speedMag = Math.hypot(c.vx, c.vy);
-                    let hitWall = (c.x < margin || c.x > canvas.width - margin || c.y < margin || c.y > canvas.height - margin);
+            // Limites del mapa
+            player.x = Math.max(30, Math.min(canvas.width - 30, player.x));
+            player.y = Math.max(30, Math.min(canvas.height - 30, player.y));
 
-                    if (hitWall && speedMag > 4.5) {
-                        explodeCar(c);
-                        cars.splice(i, 1);
-                        continue;
-                    }
+            // Movimiento simple del NPC Bot
+            npc.x += npc.vx;
+            npc.y += npc.vy;
+            if (npc.x < 50 || npc.x > canvas.width - 50) npc.vx *= -1;
+            if (npc.y < 50 || npc.y > canvas.height - 50) npc.vy *= -1;
 
-                    if (c.x < margin) { c.x = margin; c.vx *= -0.6; }
-                    if (c.x > canvas.width - margin) { c.x = canvas.width - margin; c.vx *= -0.6; }
-                    if (c.y < margin) { c.y = margin; c.vy *= -0.6; }
-                    if (c.y > canvas.height - margin) { c.y = canvas.height - margin; c.vy *= -0.6; }
-                }
-            }
-
-            for (let i = particles.length - 1; i >= 0; i--) {
-                let p = particles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-                p.alpha -= 0.02;
-                if (p.alpha <= 0) particles.splice(i, 1);
-            }
-        }
-
-        function drawRealisticCar(c) {
-            ctx.save();
-            ctx.translate(c.x, c.y);
-            ctx.rotate(c.angle);
-
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-            ctx.beginPath();
-            ctx.roundRect(-c.w/2 + 4, -c.h/2 + 6, c.w, c.h, 12);
-            ctx.fill();
-
-            ctx.fillStyle = '#18181b';
-            ctx.fillRect(-c.w/2 + 10, -c.h/2 - 6, 22, 10);
-            ctx.fillRect(c.w/2 - 32, -c.h/2 - 6, 22, 10);
-            ctx.fillRect(-c.w/2 + 10, c.h/2 - 4, 22, 10);
-            ctx.fillRect(c.w/2 - 32, c.h/2 - 4, 22, 10);
-
-            ctx.fillStyle = c.color;
-            ctx.beginPath();
-            ctx.roundRect(-c.w/2, -c.h/2, c.w, c.h, 14);
-            ctx.fill();
-
-            ctx.fillStyle = '#111113';
-            ctx.beginPath();
-            ctx.roundRect(-c.w/2 + 8, -c.h/2 + 8, c.w - 16, c.h - 16, 8);
-            ctx.fill();
-
-            ctx.fillStyle = '#1e1e24';
-            ctx.beginPath();
-            ctx.roundRect(-c.w/6, -c.h/2 + 12, c.w/2.5, c.h - 24, 6);
-            ctx.fill();
-
-            ctx.fillStyle = '#ffffff';
-            ctx.shadowColor = '#ffffff';
-            ctx.shadowBlur = 8;
-            ctx.fillRect(c.w/2 - 6, -c.h/2 + 6, 6, 8);
-            ctx.fillRect(c.w/2 - 6, c.h/2 - 14, 6, 8);
-            ctx.shadowBlur = 0;
-
-            ctx.restore();
+            if (player.msgTimer > 0) player.msgTimer--;
         }
 
         function draw() {
-            ctx.fillStyle = '#09090b';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Limpiar pantalla
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            ctx.strokeStyle = '#16161a';
-            ctx.lineWidth = 1;
-            const gridSize = 50;
+            // Dibujar elementos según la sala
+            if (currentRoom === 'Plaza') {
+                // Suelo de plaza con adoquines simulados
+                ctx.strokeStyle = '#1f2233';
+                ctx.lineWidth = 1;
+                for(let i=0; i<canvas.width; i+=40) {
+                    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+                }
 
-            for (let x = 0; x < canvas.width; x += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, canvas.height);
-                ctx.stroke();
+                // Fuente central decorativa
+                ctx.fillStyle = '#161824';
+                ctx.beginPath(); ctx.arc(400, 250, 50, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#00ffcc'; ctx.lineWidth = 2; ctx.stroke();
+            } else if (currentRoom === 'Arcade') {
+                ctx.fillStyle = '#ff005522';
+                ctx.fillRect(100, 100, 120, 80);
+                ctx.fillStyle = '#ff0055';
+                ctx.font = '14px sans-serif';
+                ctx.fillText('🕹️ Maquinita Arcade', 105, 145);
             }
-            for (let y = 0; y < canvas.height; y += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y);
-                ctx.stroke();
-            }
 
-            for (let c of cars) {
-                drawRealisticCar(c);
-            }
+            // Dibujar NPC Bot
+            drawNeonSpark(npc.x, npc.y, npc.color, npc.name, npc.message);
 
-            for (let p of particles) {
-                ctx.fillStyle = p.color;
-                ctx.globalAlpha = p.alpha;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalAlpha = 1.0;
+            // Dibujar Jugador (Santino)
+            drawNeonSpark(player.x, player.y, player.color, player.name, player.msgTimer > 0 ? player.message : null);
+        }
+
+        function drawNeonSpark(x, y, color, name, message) {
+            // Estela / Sombra de neón
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = color;
+
+            // Cuerpo (Sudadera con capucha)
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, 16, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Visor LED de la cara
+            ctx.fillStyle = '#0f1016';
+            ctx.fillRect(x - 8, y - 4, 16, 8);
+
+            ctx.shadowBlur = 0; // Apagar sombra para texto
+
+            // Nombre del usuario
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(name, x, y - 24);
+
+            // Burbuja de chat si existe mensaje
+            if (message) {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(x - 60, y - 60, 120, 25);
+                ctx.strokeStyle = '#25283d';
+                ctx.strokeRect(x - 60, y - 60, 120, 25);
+                ctx.fillStyle = '#0f1016';
+                ctx.font = '11px sans-serif';
+                ctx.fillText(message, x, y - 43);
             }
         }
 
         function loop() {
             update();
             draw();
-            animId = requestAnimationFrame(loop);
+            requestAnimationFrame(loop);
         }
+
+        loop();
     </script>
 </body>
 </html>
